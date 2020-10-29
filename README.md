@@ -30,3 +30,8 @@ nginx -t
 7.启动nginx
 nginx
 ```
+# Check
+```shell
+检测是否安装成功：
+响应头中带有server:mywaf，表示waf配置成功。
+```
