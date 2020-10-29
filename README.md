@@ -23,5 +23,10 @@ lua_code_cache on;
 在server字段中添加
 location / {
 	proxy_pass http://x.x.x.x:xx;
-}	
+}
+5.修改config.lua的RulePath(代表规则目录)和logdir(日志目录)
+6.检测nginx配置是否正确
+nginx -t
+7.启动nginx
+nginx
 ```
