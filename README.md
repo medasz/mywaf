@@ -8,13 +8,17 @@
 4.配置nginx配置文件nginx.conf,在http字段中添加以下配置
 <font color=red>asd</fond>
 #指定lua库路径
-lua_package_path "/path/to/your/openresty/mywaf/?.lua";
+lua_package_path "/path/to/your/openresty/mywaf/?.lua;/path/to/your/openresty/lualib/?.lua;;";
 #创建共享缓存区块
 lua_shared_dict limit 10m;
 #初始化lua脚本执行
-init_by_lua_file /path/to/your/openresty/mywaf/init.lua
+init_by_lua_file /path/to/your/openresty/mywaf/init.lua;
 #访问lua脚本执行
-access_by_lua_file /path/to/your/openresty/mywaf/waf.lua
+access_by_lua_file /path/to/your/openresty/mywaf/waf.lua;
+#隐藏版本信息
+server_tokens off;
+#开启lua缓存
+lua_code_cache on;
 #反向代理需要保护的服务器
 在server字段中添加
 location / {
