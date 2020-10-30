@@ -4,6 +4,9 @@ require 'config'
 --导入工具函数
 require 'tools'
 
+--设置变量
+whiteIpButton	=	optionIsOn(whiteIpButton)
+
 --IP白名单检测
 function checkWhiteIp()
 	if whiteIpButton then
