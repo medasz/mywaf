@@ -1,8 +1,8 @@
 --获取远程IP地址
-remoteIp=getRemoteIp()
+local remoteIp=getRemoteIp()
 --修改响应头
 ngx.header['Server']=wafName
-ngx.say(remoteIp)
+
 --IP白名单检测
 if checkWhiteIp() then
 
