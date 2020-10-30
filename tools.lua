@@ -1,3 +1,4 @@
+--获取远程IP地址
 function getRemoteIp()
 	-- body
 	local remoteIp=ngx.var.remote_addr
@@ -7,6 +8,7 @@ function getRemoteIp()
 	return remoteIp
 end
 
+--判断开关状态
 function optionIsOn(option)
 	return option == "on"
 end
