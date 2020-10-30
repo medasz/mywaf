@@ -1,1 +1,1 @@
-wafName=mywaf
+wafName="mywaf"
