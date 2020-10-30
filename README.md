@@ -40,6 +40,8 @@ nginx
 对[ngx_lua_waf](https://github.com/loveshell/ngx_lua_waf)进行一些小的修改
 2. 第二个版本
 上传了ngx_lua_waf的流程模块
+3. 第三个版本
+修改一些函数实现
 
 # TODO
 1. 规则存储到数据库
