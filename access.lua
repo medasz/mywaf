@@ -6,6 +6,8 @@ ngx.header['Server']=wafName
 --IP白名单检测
 if checkWhiteIp() then
 
+elseif checkBlackIp() then
+	
 else
 	return
 end
