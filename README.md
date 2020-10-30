@@ -35,3 +35,13 @@ nginx
 检测是否安装成功：
 响应头中带有server:mywaf，表示waf配置成功。
 ```
+# History
+1. 第一个版本
+对[ngx_lua_waf](https://github.com/loveshell/ngx_lua_waf)进行一些小的修改
+2. 第二个版本
+上传了ngx_lua_waf的流程模块
+
+# TODO
+1. 规则存储到数据库
+2. waf管理界面
+3. 
