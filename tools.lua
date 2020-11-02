@@ -35,7 +35,7 @@ end
 --servername_xxxx-xx-xx_sec.log
 function log(method,uri,data,rule)
 	if logButton then
-		local msg 		= string.format([=[%s [%s] "%s %s/%s" "%s" "%s"]=],remoteIp,ngx.localtime(),ngx.req.get_method(),ngx.var.server_name,ngx.var.request_uri,data,rule)
+		local msg 		= string.format([=[%s [%s] "%s %s/%s" "%s" "%s"]=],remoteIp,ngx.localtime(),method,ngx.var.server_name,uri,data,rule)
 		local filename	= ngx.var.server_name.."_"..ngx.today().."_sec.log"
 		logWrite(filename,msg)
 	end
