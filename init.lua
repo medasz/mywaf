@@ -77,7 +77,7 @@ function whiteUriCheck()
 	if whiteUriButton then
 		local uri = ngx.var.uri
 		if uri and uri ~= "" then
-			ngx.say(uri)
+			ngx.say(whiteUriRules)
 			for _,rule in ipairs(whiteUriRules) do
 				if ngx.re.match(uri,rule,"isjo") then
 					return true
