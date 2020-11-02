@@ -25,9 +25,12 @@ location / {
 	proxy_pass http://x.x.x.x:xx;
 }
 5.修改config.lua的RulePath(代表规则目录)和logdir(日志目录)
-6.检测nginx配置是否正确
+6.给logs和rules目录读写权限
+chown -R nobody /path/to/your/openresty/mywaf/logs
+chown -R nobody /path/to/your/openresty/mywaf/rules
+7.检测nginx配置是否正确
 nginx -t
-7.启动nginx
+8.启动nginx
 nginx
 ```
 # Check
