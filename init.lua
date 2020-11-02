@@ -132,9 +132,10 @@ end
 function getParamaCheck()
 	if getParamaButton then
 		local parama = ngx.req.get_uri_args()
-		local t 	 = {}
 		for k,v in pairs(parama) do
+			local data = nil
 			if type(v) == "table" then
+				local t = {}
 				for _,val in ipairs(v) do
 					if type(val) == "boolean" then
 						
@@ -142,17 +143,16 @@ function getParamaCheck()
 						table.insert(t,val)
 					end
 				end
+				data = table.concat(t," ")
 			elseif type(v)=="boolean" then
 
 			else
-				table.insert(t,v)
+				data = v
 			end
-		end
-
-		for _,p in ipairs(t) do
+			
 			for _,rule in ipairs(blackGetParama) do
-				if ngx.re.match(p,rule,"isjo") then
-					log()
+				if data and data ~= "" and rule ~= "" and ngx.re.match(data,rule,"isjo") then
+					log(ngx.req.get_method(),ngx.var.request_uri,data,rule)
 					sayHtml()
 				end
 			end

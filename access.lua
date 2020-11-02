@@ -18,6 +18,8 @@ elseif blackUserAgentCheck() then
 
 elseif blackUriCheck() then
 
+elseif getParamaCheck() then
+
 else
 	return
 end
