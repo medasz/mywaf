@@ -13,6 +13,8 @@ whiteUriButton	=	optionIsOn(whiteUriButton)
 whiteUriRules	=	readRule("whiteUri")
 blackUserAgentButton=optionIsOn(blackUserAgentButton)
 blackUserAgentRules=readRule("blackUserAgent")
+logButton		=	optionIsOn(logButton)
+
 
 --IP白名单检测
 function checkWhiteIp()
@@ -92,7 +94,15 @@ end
 --user-agent黑名单检测
 function blackUserAgentCheck()
 	if blackUserAgentButton then
-
+		local userAgent = ngx.var.http_user_agent
+		if userAgent and userAgent ~= "" then
+			for _,rule in ipairs(blackUserAgentRules) do
+				if ngx.re.match(userAgent,rule,"isjo") then
+					log()
+					sayHtml()
+				end
+			end
+		end
 	end
 	return false
 end
