@@ -19,6 +19,8 @@ blackUriButton	=	optionIsOn(blackUriButton)
 blackUriRules	=	readRule("blackUri")
 getParamaButton	=	optionIsOn(getParamaButton)
 getParamaRules	=	readRule("blackGetParama")
+blackCookieButton=	optionIsOn(blackCookieButton)
+blackCookieRules=	readRule("blackCookie")
 
 --IP白名单检测
 function checkWhiteIp()
@@ -153,6 +155,22 @@ function getParamaCheck()
 			for _,rule in ipairs(getParamaRules) do
 				if data and data ~= "" and rule ~= "" and ngx.re.match(data,rule,"isjo") then
 					log(ngx.req.get_method(),ngx.var.request_uri,data,rule)
+					sayHtml()
+				end
+			end
+		end
+	end
+	return false
+end
+
+--cookie黑名单检测
+function blackCookieCheck()
+	if blackCookieButton then
+		local cookie = ngx.var.http_cookie
+		if cookie then
+			for _,rule in ipairs(blackCookieRules) do
+				if rule ~= "" and ngx.re.match(cookie,rule,"isjo") then
+					log(ngx.req.get_method(),ngx.var.request_uri,cookie,rule)
 					sayHtml()
 				end
 			end

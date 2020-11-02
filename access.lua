@@ -20,6 +20,8 @@ elseif blackUriCheck() then
 
 elseif getParamaCheck() then
 
+elseif blackCookieCheck() then
+
 else
 	return
 end

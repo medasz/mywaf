@@ -71,3 +71,6 @@ li{ list-style-type:none;}
 </div>
 </body></html>
 ]]	
+
+--cookie黑名单检测开关
+blackCookieButton	=	"on"
