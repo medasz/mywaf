@@ -150,7 +150,7 @@ function getParamaCheck()
 				data = v
 			end
 			
-			for _,rule in ipairs(blackGetParama) do
+			for _,rule in ipairs(getParamaRules) do
 				if data and data ~= "" and rule ~= "" and ngx.re.match(data,rule,"isjo") then
 					log(ngx.req.get_method(),ngx.var.request_uri,data,rule)
 					sayHtml()
