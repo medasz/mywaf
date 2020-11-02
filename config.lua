@@ -28,8 +28,13 @@ scanCheckButton	=	"on"
 --uri白名单检测开关
 whiteUriButton	=	"on"
 
+--uri黑名单检测开关
+blackUriButtotn	=	"on"
+
 --user-agent黑名单开关
 blackUserAgentButton="on"
+
+
 
 --返回拦截界面开关和页面
 redirect		=	"on"

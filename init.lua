@@ -15,6 +15,8 @@ blackUserAgentButton=optionIsOn(blackUserAgentButton)
 blackUserAgentRules=readRule("blackUserAgent")
 logButton		=	optionIsOn(logButton)
 redirect		=	optionIsOn(redirect)
+blackUriButton	=	optionIsOn(blackUriButton)
+blackUriRules	=	readRule("blackUri")
 
 --IP白名单检测
 function checkWhiteIp()
@@ -106,4 +108,25 @@ function blackUserAgentCheck()
 		end
 	end
 	return false
+end
+
+--uri黑名单检测
+function blackUriCheck()
+	if blackUriButton then
+		local requestUri = ngx.var.request_uri
+		if uri and uri ~= "" then
+			for _,rule in ipairs(blackUriRules) do
+				if ngx.re.match(requestUri,rule,"isjo") then
+					log(ngx.req.get_method(),requestUri,requestUri,rule)
+					sayHtml()
+				end
+			end
+		end
+	end
+	return false
+end
+
+--get请求参数检测
+function getParamCheck()
+	
 end

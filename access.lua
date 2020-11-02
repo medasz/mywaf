@@ -16,6 +16,10 @@ elseif whiteUriCheck() then
 	
 elseif blackUserAgentCheck() then
 
+elseif blackUriCheck() then
+
+elseif getParamCheck() then
+
 else
 	return
 end
