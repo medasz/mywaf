@@ -7,6 +7,8 @@ ngx.header['Server']=wafName
 if checkWhiteIp() then
 
 elseif checkBlackIp() then
+	
+elseif ccDeny() then
 
 else
 	return
