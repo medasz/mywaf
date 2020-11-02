@@ -1,5 +1,5 @@
 --获取远程IP地址
-local remoteIp=getRemoteIp()
+remoteIp=getRemoteIp()
 --修改响应头
 ngx.header['Server']=wafName
 
@@ -7,7 +7,7 @@ ngx.header['Server']=wafName
 if checkWhiteIp() then
 
 elseif checkBlackIp() then
-	
+
 else
 	return
 end
