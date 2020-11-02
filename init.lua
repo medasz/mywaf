@@ -114,7 +114,6 @@ end
 function blackUriCheck()
 	if blackUriButton then
 		local requestUri = ngx.var.request_uri
-		log("-","-",requestUri,"-")
 		if requestUri and requestUri ~= "" then
 			for _,rule in ipairs(blackUriRules) do
 				if ngx.re.match(requestUri,rule,"isjo") then
