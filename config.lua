@@ -2,7 +2,8 @@
 wafName			=	"mywaf"
 
 --规则库目录
-rulesPath		=	"./rules"
+--注意：必须使用绝对路径，否则会找不到规则文件，导致文件打开失败
+rulesPath		=	"/opt/openresty/mywaf/rules"
 
 --IP白名单列表和开关
 whiteIpList		=	{"127.0.0.1"}
