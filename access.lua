@@ -22,6 +22,8 @@ elseif getParamaCheck() then
 
 elseif blackCookieCheck() then
 
+elseif blackPostCheck() then
+
 else
 	return
 end

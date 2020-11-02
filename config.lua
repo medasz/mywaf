@@ -74,3 +74,6 @@ li{ list-style-type:none;}
 
 --cookie黑名单检测开关
 blackCookieButton	=	"on"
+
+--post请求黑名单检测开关
+blackPostButton		=	"on"

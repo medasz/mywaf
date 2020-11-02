@@ -21,6 +21,8 @@ getParamaButton	=	optionIsOn(getParamaButton)
 getParamaRules	=	readRule("blackGetParama")
 blackCookieButton=	optionIsOn(blackCookieButton)
 blackCookieRules=	readRule("blackCookie")
+blackPostButton	=	optionIsOn(blackPostButton)
+blackPostRules	=	optionIsOn("blackPost")
 
 --IP白名单检测
 function checkWhiteIp()
@@ -175,6 +177,14 @@ function blackCookieCheck()
 				end
 			end
 		end
+	end
+	return false
+end
+
+--post请求黑名单检测
+function blackPostCheck()
+	if blackPostButton then
+		
 	end
 	return false
 end
