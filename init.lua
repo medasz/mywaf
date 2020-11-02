@@ -11,6 +11,8 @@ ccDenyButton	=	optionIsOn(ccDenyButton)
 scanCheckButton	=	optionIsOn(scanCheckButton)
 whiteUriButton	=	optionIsOn(whiteUriButton)
 whiteUriRules	=	readRule("whiteUri")
+blackUserAgentButton=optionIsOn(blackUserAgentButton)
+blackUserAgentRules=readRule("blackUserAgent")
 
 --IP白名单检测
 function checkWhiteIp()
@@ -83,6 +85,14 @@ function whiteUriCheck()
 				end
 			end
 		end
+	end
+	return false
+end
+
+--user-agent黑名单检测
+function blackUserAgentCheck()
+	if blackUserAgentButton then
+
 	end
 	return false
 end

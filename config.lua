@@ -24,3 +24,6 @@ scanCheckButton	=	"on"
 --uri白名单检测开关
 whiteUriButton	=	"on"
 
+--user-agent黑名单开关
+blackUserAgentButton="on"
+

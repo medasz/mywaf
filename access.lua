@@ -14,6 +14,8 @@ elseif scanCheck() then
 	ngx.exit(444)
 elseif whiteUriCheck() then
 	
+elseif blackUserAgentCheck() then
+
 else
 	return
 end
