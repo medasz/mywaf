@@ -44,8 +44,8 @@ function ccDeny()
 		end
 		local count	=	limit:get(token)
 		if count then
-			local curCount	=	tonumber(rate[1])
-			if count >= curCount then
+			local totalCount	=	tonumber(rate[1])
+			if count < totalCount then
 				limit:incr(token,1)
 			else
 				ngx.exit(503)
