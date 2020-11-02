@@ -17,6 +17,8 @@ logButton		=	optionIsOn(logButton)
 redirect		=	optionIsOn(redirect)
 blackUriButton	=	optionIsOn(blackUriButton)
 blackUriRules	=	readRule("blackUri")
+getParamaButton	=	optionIsOn(getParamaButton)
+getParamaRules	=	readRule("blackGetParama")
 
 --IP白名单检测
 function checkWhiteIp()
@@ -127,3 +129,34 @@ function blackUriCheck()
 end
 
 --get请求参数检测
+function getParamaCheck()
+	if getParamaButton then
+		local parama = ngx.req.get_uri_args()
+		local t 	 = {}
+		for k,v in pairs(parama) do
+			if type(v) == "table" then
+				for _,val in ipairs(v) do
+					if type(val) == "boolean" then
+						
+					else
+						table.insert(t,val)
+					end
+				end
+			elseif type(v)=="boolean" then
+
+			else
+				table.insert(t,v)
+			end
+		end
+
+		for _,p in ipairs(t) do
+			for _,rule in ipairs(blackGetParama) do
+				if ngx.re.match(p,rule,"isjo") then
+					log()
+					sayHtml()
+				end
+			end
+		end
+	end
+	return false
+end

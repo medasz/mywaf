@@ -34,6 +34,9 @@ blackUriButton	=	"on"
 --user-agent黑名单开关
 blackUserAgentButton="on"
 
+--get请求参数检测开关
+getParamaButton	=	"on"
+
 --返回拦截界面开关和页面
 redirect		=	"on"
 html			=	[[
