@@ -56,7 +56,7 @@ end
 --返回拦截界面
 function sayHtml()
 	if redirect then
-		ngx.header['content-type']="text/html"
+		ngx.header['Content-Type']="text/html"
 		ngx.status=ngx.HTTP_FORBIDDEN
 		ngx.say(html)
 		ngx.exit(ngx.status)
