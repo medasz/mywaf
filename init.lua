@@ -39,7 +39,7 @@ function ccDeny()
 		local uri	=	ngx.var.request_uri
 		local token	=	remoteIp..uri
 		local rate	=	ngx.re.match(ccDenyRate,"(.*)/(.*)")
-		if limit ~= nil and uri~=nil and token ~= nil and rate ~=nil then
+		if limit == nil or uri == nil or token == nil or rate == nil then
 			return false
 		end
 		local count	=	limit:get(token)
