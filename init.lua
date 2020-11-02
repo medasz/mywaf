@@ -82,7 +82,6 @@ function whiteUriCheck()
 					return true
 				end
 			end
-			ngx.say("白名单不存在")
 		end
 	end
 	return false
