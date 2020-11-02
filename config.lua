@@ -29,7 +29,7 @@ scanCheckButton	=	"on"
 whiteUriButton	=	"on"
 
 --uri黑名单检测开关
-blackUriButtotn	=	"on"
+blackUriButton	=	"on"
 
 --user-agent黑名单开关
 blackUserAgentButton="on"
