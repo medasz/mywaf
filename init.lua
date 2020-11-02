@@ -48,7 +48,7 @@ function ccDeny()
 			if count >= curCount then
 				limit:incr(token,1)
 			else
-				ngx.exit(444)
+				ngx.exit(503)
 			end
 		else
 			local time	=	tonumber(rate[2])
