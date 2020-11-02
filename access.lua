@@ -15,5 +15,5 @@ elseif scanCheck() then
 elseif whiteUriCheck() then
 	
 else
-	ngx.exit(403)
+	return
 end
