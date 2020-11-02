@@ -184,7 +184,10 @@ end
 --post请求黑名单检测
 function blackPostCheck()
 	if blackPostButton then
-		
+		local method = ngx.req.get_method()
+		if method == "POST" then
+			boundary = getBoundary()
+		end
 	end
 	return false
 end

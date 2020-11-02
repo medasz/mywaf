@@ -61,3 +61,20 @@ function sayHtml()
 		ngx.exit(ngx.status)
 	end
 end
+
+--通过content-type判断是否是文件上传
+--数据格式
+--Content-Type: multipart/form-data; boundary=---------------------------87733188139062126523958042595
+function getBoundary()
+	local boundary = ngx.req.get_headers['Content-Type']
+	if not boundary then
+		return nil
+	end
+
+	local m = ngx.re.match(boundary,[[;\s*boundary=([^\",;]+)]],"isjo")
+	if m then
+		return m
+	end
+
+	return ngx.re.match(boundary,[=[;\s*boundary="([^\"]+)"]=],"isjo")
+end
