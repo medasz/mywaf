@@ -76,12 +76,13 @@ end
 function whiteUriCheck()
 	if whiteUriButton then
 		local uri = ngx.var.uri
-		if uri and url ~= "" then
+		if uri and uri ~= "" then
 			for _,rule in ipairs(whiteUriRules) do
 				if ngx.re.match(uri,rule,"isjo") then
 					return true
 				end
 			end
+			ngx.say("白名单不存在")
 		end
 	end
 	return false
