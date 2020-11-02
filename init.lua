@@ -14,7 +14,7 @@ whiteUriRules	=	readRule("whiteUri")
 blackUserAgentButton=optionIsOn(blackUserAgentButton)
 blackUserAgentRules=readRule("blackUserAgent")
 logButton		=	optionIsOn(logButton)
-
+redirect		=	optionIsOn(redirect)
 
 --IP白名单检测
 function checkWhiteIp()
@@ -98,7 +98,7 @@ function blackUserAgentCheck()
 		if userAgent and userAgent ~= "" then
 			for _,rule in ipairs(blackUserAgentRules) do
 				if ngx.re.match(userAgent,rule,"isjo") then
-					log()
+					log(ngx.req.get_method(),ngx.var.request_uri,userAgent,rule)
 					sayHtml()
 				end
 			end
