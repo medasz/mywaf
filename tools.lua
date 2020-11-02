@@ -12,3 +12,18 @@ end
 function optionIsOn(option)
 	return option == "on"
 end
+
+--读取规则文件
+function readRule(filename)
+	local rulesList = {}
+	local fd =io.open(rulesPath.."/"..filename,"r")
+	if not fd then
+		return rulesList
+	end
+	
+	for line in fd:lines() do
+		table.insert(rulesList,line)
+	end
+	fd:close()
+	return rulesList
+end

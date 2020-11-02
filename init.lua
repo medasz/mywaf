@@ -8,6 +8,10 @@ require 'tools'
 whiteIpButton	=	optionIsOn(whiteIpButton)
 blackIpButton	=	optionIsOn(blackIpButton)
 ccDenyButton	=	optionIsOn(ccDenyButton)
+scanCheckButton	=	optionIsOn(scanCheckButton)
+whiteUriButton	=	optionIsOn(whiteUriButton)
+whiteUriRules	=	readRule("whiteUri")
+
 --IP白名单检测
 function checkWhiteIp()
 	if whiteIpButton then
@@ -53,6 +57,31 @@ function ccDeny()
 		else
 			local time	=	tonumber(rate[2])
 			limit:set(token,1,time)
+		end
+	end
+	return false
+end
+
+--扫描器特征检测
+function scanCheck()
+	if scanCheckButton then
+		if ngx.var.http_acunetix_aspect and ngx.var.http_x_scan_memo then 
+			ngx.exit(444)
+		end
+	end
+	return false
+end
+
+--uri白名单检测
+function whiteUriCheck()
+	if whiteUriButton then
+		local uri = ngx.var.uri
+		if uri and url ~= "" then
+			for _,rule in ipairs(whiteUriRules) do
+				if ngx.re.match(uri,rule,"isjo") then
+					return true
+				end
+			end
 		end
 	end
 	return false

@@ -7,9 +7,13 @@ ngx.header['Server']=wafName
 if checkWhiteIp() then
 
 elseif checkBlackIp() then
-	
+
 elseif ccDeny() then
 
+elseif scanCheck() then
+	ngx.exit(444)
+elseif whiteUriCheck() then
+	
 else
 	return
 end
