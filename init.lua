@@ -114,7 +114,7 @@ end
 function blackUriCheck()
 	if blackUriButton then
 		local requestUri = ngx.var.request_uri
-		if uri and uri ~= "" then
+		if requestUri and requestUri ~= "" then
 			for _,rule in ipairs(blackUriRules) do
 				if ngx.re.match(requestUri,rule,"isjo") then
 					log(ngx.req.get_method(),requestUri,requestUri,rule)
@@ -128,5 +128,5 @@ end
 
 --get请求参数检测
 function getParamCheck()
-	
+
 end
