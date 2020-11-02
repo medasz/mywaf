@@ -100,6 +100,7 @@ function blackUserAgentCheck()
 				if ngx.re.match(userAgent,rule,"isjo") then
 					log(ngx.req.get_method(),ngx.var.request_uri,userAgent,rule)
 					sayHtml()
+					return true
 				end
 			end
 		end
