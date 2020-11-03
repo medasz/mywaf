@@ -77,3 +77,7 @@ blackCookieButton	=	"on"
 
 --post请求黑名单检测开关
 blackPostButton		=	"on"
+
+--文件后缀名黑名单检测开关和
+blackFileExtButton	=	"on"
+blackFileExtRules	=	{"php","jsp"}

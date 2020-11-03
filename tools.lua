@@ -89,3 +89,15 @@ function checkPostRule(data)
 	end
 	return true
 end
+
+--文件后缀名黑名单检查
+function blackFileExtCheck(ext)
+	if blackFileExtButton then
+		for _,rule in ipairs(blackFileExtRules) do
+			if rule ~= "" and ngx.re.match(ext,rule,"isjo") then
+				log(ngx.req.get_method(),ngx.var.request_uri,ext,rule)
+				sayHtml()
+			end
+		end
+	end
+end

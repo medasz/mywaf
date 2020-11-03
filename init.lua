@@ -206,13 +206,27 @@ function blackPostCheck()
 				local curSize = 0
 				while curSize < length do
 					local data,err,flag = sock:receive(size)
+					data = data or flag
 					if not data then
 						return false
 					end
 					--向新请求体中追加数据
 					ngx.req.append_body(data)
+					--检查文件内容
+					checkPostRule(data)
+					--获取文件后缀名
+					local m = ngx.re.match(data,[[;\s*filename=\"([^\"]+)\.([^\"]+)\"]],"isjo")
+					if not m then
+						return false
+					end
+					--检测文件后缀
+					blackFileExtCheck(m[2])
 					--增加长度计算器
-					
+					curSize = curSize + #data
+					local less = length - curSize
+					if less < size then
+						size = less
+					end
 				end
 				--结束新请求体构造
 				ngx.req.finish_body()
