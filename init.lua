@@ -241,7 +241,7 @@ function blackPostCheck()
 						if type(v) == "table" then
 							local t = {}
 							for _,val in ipairs(v) do
-								if type(val) == 'boolean'
+								if type(val) == 'boolean' then
 
 								else
 									table.insert(t,val)
