@@ -34,7 +34,7 @@ end
 --servername_xxxx-xx-xx_sec.log
 function log(method,uri,data,rule)
 	if logButton then
-		local msg 		= string.format([=[%s [%s] "%s %s%s" "%s" "%s"]=].."\n",remoteIp,ngx.localtime(),method,ngx.var.server_name,uri,data,rule)
+		local msg 		= string.format([=[%s [%s] "%s %s%s" "%s" "%s"]=].."\n",remoteIp,ngx.localtime(),method,ngx.var.server_name,ngx.unescape_uri(uri),data,rule)
 		local filename	= ngx.var.server_name.."_"..ngx.today().."_sec.log"
 		logWrite(filename,msg)
 	end
@@ -80,3 +80,12 @@ function getBoundary()
 end
 
 --匹配post规则拦截请求
+function checkPostRule(data)
+	for _,rule in ipairs(blackPostRules) do
+		if rule ~= "" and ngx.re.match(ngx.unescape_uri(data),rule,"isjo") then
+			log(ngx.req.get_method(),ngx.var.request_uri,data,rule)
+			sayHtml()
+		end
+	end
+	return true
+end

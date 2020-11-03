@@ -155,7 +155,7 @@ function getParamaCheck()
 			end
 			
 			for _,rule in ipairs(getParamaRules) do
-				if data and data ~= "" and rule ~= "" and ngx.re.match(data,rule,"isjo") then
+				if data and data ~= "" and rule ~= "" and ngx.re.match(ngx.unescape_uri(data),rule,"isjo") then
 					log(ngx.req.get_method(),ngx.var.request_uri,data,rule)
 					sayHtml()
 				end
@@ -188,7 +188,34 @@ function blackPostCheck()
 		if method == "POST" then
 			local boundary = getBoundary()
 			if boundary then
-
+				--获取一个包含下游连接的对象
+				local sock = ngx.req.socket()
+				if not sock then
+					return false
+				end
+				--创建一个当前请求的新请求体，并初始化缓存区,128KB
+				ngx.req.init_body(128*1024)
+				--获取当前请求体的长度
+				local  length = tonumber(ngx.req.get_headers()['Content-Length'])
+				--设置文件读取步长4KB
+				local 	size  =	4096
+				if size > length then
+					size = length
+				end
+				--设置长度计算器
+				local curSize = 0
+				while curSize < length do
+					local data,err,flag = sock:receive(size)
+					if not data then
+						return false
+					end
+					--向新请求体中追加数据
+					ngx.req.append_body(data)
+					--增加长度计算器
+					
+				end
+				--结束新请求体构造
+				ngx.req.finish_body()
 			else
 				ngx.req.read_body()
 				local args = ngx.req.get_post_args()
@@ -210,8 +237,8 @@ function blackPostCheck()
 						else
 							data = v
 						end
-						if data and data ~= "" and body() then
-
+						if data and data ~= "" and checkPostRule(data) then
+							checkPostRule(k)
 						end
 					end
 				end
