@@ -78,3 +78,5 @@ function getBoundary()
 
 	return ngx.re.match(boundary,[=[;\s*boundary="([^\"]+)"]=],"isjo")
 end
+
+--匹配post规则拦截请求

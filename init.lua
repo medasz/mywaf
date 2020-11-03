@@ -186,7 +186,36 @@ function blackPostCheck()
 	if blackPostButton then
 		local method = ngx.req.get_method()
 		if method == "POST" then
-			boundary = getBoundary()
+			local boundary = getBoundary()
+			if boundary then
+
+			else
+				ngx.req.read_body()
+				local args = ngx.req.get_post_args()
+				if args then
+					for k,v in pairs(args) do
+						local data = nil
+						if type(v) == "table" then
+							local t = {}
+							for _,val in ipairs(v) do
+								if type(val) == 'boolean'
+
+								else
+									table.insert(t,val)
+								end
+							end
+							data = table.concat(t," ")
+						elseif type(v) == "boolean" then
+
+						else
+							data = v
+						end
+						if data and data ~= "" and body() then
+
+						end
+					end
+				end
+			end
 		end
 	end
 	return false
