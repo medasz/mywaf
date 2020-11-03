@@ -230,6 +230,8 @@ function blackPostCheck()
 				end
 				--结束新请求体构造
 				ngx.req.finish_body()
+				--关闭socket对象
+				sock:close()
 			else
 				ngx.req.read_body()
 				local args = ngx.req.get_post_args()
