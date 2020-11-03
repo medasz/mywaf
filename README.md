@@ -1,5 +1,6 @@
 # mywaf
-对loveshell/ngx_lua_waf进行一些小修改
+一个简单的waf
+
 # Install
 ```shell
 1.安装openresty
@@ -45,8 +46,15 @@ nginx
 上传了ngx_lua_waf的流程模块
 3. 第三个版本
 修改一些函数实现
+4. 第四个版本
+修改整体设计
 
 # TODO
 1. 规则存储到数据库
 2. waf管理界面
-3. 
+3. 结果展示
+
+# About
+1. 第一，二，三个版本是基于loveshell的ngx_lua_waf修改的
+2. 第四个版本是基于unixhot的waf修改的
+3. 第五个版本是基于xsec-lab的x-waf和x-waf-admin修改的
