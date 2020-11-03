@@ -7,7 +7,6 @@
 2.git clone https://github.com/medasz/mywaf.git
 3.cp -r mywaf /path/to/your/openresty/
 4.配置nginx配置文件nginx.conf,在http字段中添加以下配置
-<font color=red>asd</fond>
 #指定lua库路径
 lua_package_path "/path/to/your/openresty/mywaf/?.lua;/path/to/your/openresty/lualib/?.lua;;";
 #创建共享缓存区块
