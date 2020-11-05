@@ -29,7 +29,7 @@
 1. 规则存储到数据库
 2. waf管理界面
 3. 结果展示
-4. unixhot的waf中没有
+4. unixhot的waf中没有请求体检查
 
 # About
 1. 第一，二，三个版本是基于loveshell的ngx_lua_waf修改的
