@@ -154,3 +154,10 @@ function black_get_args_check()
 		end
 	end
 end
+
+--black post check
+function black_post_check()
+	if config_black_post_status == "on" then
+
+	end
+end

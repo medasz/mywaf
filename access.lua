@@ -19,6 +19,8 @@ function waf_main()
 
 	elseif black_get_args_check() then
 
+	elseif black_post_check() then
+
 	else
 		return
 	end

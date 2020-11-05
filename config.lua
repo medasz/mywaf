@@ -52,3 +52,6 @@ config_black_uri_status	=	"on"
 
 --black get args status
 config_black_get_args_status=	"on"
+
+--black post status
+config_black_post_status=	"on"
