@@ -2,7 +2,7 @@ require 'config'
 require 'tools'
 
 function white_ip_check()
-	if config_white_ip_status then
+	if config_white_ip_status == "on" then
 		local client_ip 	= 	get_client_ip()
 		local white_ip_rule	=	get_rule("white_ip.rule")
 		if white_ip_rule ~= nil then
