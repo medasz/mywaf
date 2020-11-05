@@ -43,3 +43,6 @@ config_cc_deny_rate		=	"20/60"
 
 --black cookie status
 config_black_cookie_status = "on"
+
+--white uri status
+config_white_uri_status	=	"on"

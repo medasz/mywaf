@@ -84,9 +84,9 @@ function black_cookie_check()
 	if config_black_cookie_status == "on" then
 		local cookie = ngx.var.http_cookie
 		local black_cookie_rule = get_rule("black_cookie.rule")
-		if black_user_agent_rule ~= nil then
+		if black_cookie_rule ~= nil then
 			for _,rule in ipairs(black_cookie_rule) do
-				if rule ~= "" and mgx.re.match(cookie,rule,"isjo") then
+				if rule ~= "" and ngx.re.match(cookie,rule,"isjo") then
 					log_record("black cookie",ngx.var.request_uri,cookie,rule)
 					if config_waf_status == "on" then
 						waf_output()
@@ -97,4 +97,9 @@ function black_cookie_check()
 	end
 end
 
---
+--white uri check
+function white_uri_check()
+	if config_white_uri_status == "on" then
+		
+	end
+end

@@ -13,6 +13,8 @@ function waf_main()
 
 	elseif black_cookie_check() then
 
+	elseif white_uri_check() then
+
 	else
 		return
 	end
