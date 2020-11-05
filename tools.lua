@@ -52,7 +52,7 @@ function log_record(action,uri,data,rule)
 	if not fd then
 		return
 	end
-	fd:write(msg)
+	fd:write(msg.."\n")
 	fd:flush()
 	fd:close()
 end
