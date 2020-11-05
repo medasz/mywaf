@@ -11,3 +11,6 @@ config_waf_status		=	"on"
 
 --white ip status
 config_white_ip_status	= 	"on"
+
+--black ip status
+config_black_ip_status	=	"on"
