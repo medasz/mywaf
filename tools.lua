@@ -40,7 +40,7 @@ function log_record(action,uri,data,rule)
 		local_time	= local_time,
 		action		= action,
 		server_name	= server_name,
-		uri 		= uri
+		uri 		= uri,
 		user_agent 	= user_agent,
 		data		= data,
 		rule 		= rule
