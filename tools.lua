@@ -66,4 +66,5 @@ function waf_output()
 		ngx.status=ngx.HTTP_FORBIDDEN
 		ngx.say(config_waf_output_html)
 		ngx.exit(ngx.status)
+	end
 end

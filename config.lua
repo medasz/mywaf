@@ -37,3 +37,6 @@ config_waf_output_html	=	[[
 
 --waf CC deny
 config_cc_deny_status	=	"on"
+
+--waf CC rate
+config_cc_deny_rate		=	"6/60"

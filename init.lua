@@ -37,7 +37,7 @@ end
 
 --user agent check
 function black_user_agent_check()
-	if config_user_agent_rule == "on" then
+	if config_user_agent_status == "on" then
 		local user_agent = ngx.var.http_user_agent
 		local black_user_agent_rule = get_rule("black_user_agent.rule")
 		if black_user_agent_rule ~= nil then
@@ -55,5 +55,26 @@ end
 
 --cc deny
 function cc_deny()
-	
+	if config_cc_deny_status == "on" then
+		local client_ip = get_client_ip()
+		local token = client_ip..ngx.var.uri
+		local ccCount = tonumber(string.match(config_cc_deny_rate,"(.*)/"))
+		local ccTime = tonumber(string.match(config_xx_ddeny_rate,"/(.*)"))
+		local limit = ngx.shared.limit
+		if limit then
+			local curCount = limit:get(token)
+			if curCount then
+				if curCount > ccCount then
+					log_record("cc deny",ngx.var.request_uri,"-","-")
+					if config_waf_status == "on" then
+						ngx.exit(403)
+					end
+				else
+					limit:incr(token,1)
+				end
+			else
+				limit:set(token,1,ccTime)
+			end
+		end
+	end
 end
