@@ -21,7 +21,7 @@
 2. 第二个版本
 上传了ngx_lua_waf的流程模块
 3. 第三个版本
-修改一些函数实现
+修改一些函数实现，上传了规则
 4. 第四个版本
 修改整体设计，主要是根据[unixhot的waf](https://github.com/unixhot/waf.git)
 
