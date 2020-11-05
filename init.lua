@@ -100,6 +100,15 @@ end
 --white uri check
 function white_uri_check()
 	if config_white_uri_status == "on" then
-		
+		local request_uri = ngx.var.request_uri
+		local white_uri_rule = get_rule("white_uri.rule")
+		if white_uri_rule ~= nil then
+			for _,rule in ipairs(white_uri_rule) do
+				if rule ~= "" and ngx.re.match(request_uri,rule,"isjo") then
+					log_record("white uri",nxg.var.request_uri,request_uri,rule)
+					return true
+				end
+			end
+		end
 	end
 end
