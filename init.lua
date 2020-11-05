@@ -59,12 +59,12 @@ function cc_deny()
 		local client_ip = get_client_ip()
 		local token = client_ip..ngx.var.uri
 		local ccCount = tonumber(string.match(config_cc_deny_rate,"(.*)/"))
-		local ccTime = tonumber(string.match(config_xx_ddeny_rate,"/(.*)"))
+		local ccTime = tonumber(string.match(config_cc_deny_rate,"/(.*)"))
 		local limit = ngx.shared.limit
 		if limit then
 			local curCount = limit:get(token)
 			if curCount then
-				if curCount > ccCount then
+				if curCount >= ccCount then
 					log_record("cc deny",ngx.var.request_uri,"-","-")
 					if config_waf_status == "on" then
 						ngx.exit(403)
