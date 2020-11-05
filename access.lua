@@ -15,6 +15,8 @@ function waf_main()
 
 	elseif white_uri_check() then
 
+	elseif black_uri_check() then
+
 	else
 		return
 	end

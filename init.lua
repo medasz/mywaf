@@ -105,8 +105,26 @@ function white_uri_check()
 		if white_uri_rule ~= nil then
 			for _,rule in ipairs(white_uri_rule) do
 				if rule ~= "" and ngx.re.match(request_uri,rule,"isjo") then
-					log_record("white uri",nxg.var.request_uri,request_uri,rule)
+					log_record("white uri",ngx.var.request_uri,request_uri,rule)
 					return true
+				end
+			end
+		end
+	end
+end
+
+--black uri check
+function black_uri_check()
+	if config_black_uri_status == "on" then
+		local request_uri = ngx.var.request_uri
+		local black_uri_rule = get_rule("black_uri.rule")
+		if black_uri_rule ~= nil then
+			for _,rule in ipairs(black_uri_rule) do
+				if rule ~= "" and mgx.re.match(request_uri,rule,"isjo") then
+					log("black uri",ngx.var.request_uri,request_uri,rule)
+					if config_waf_status == "on" then
+						waf_output()
+					end
 				end
 			end
 		end

@@ -46,3 +46,6 @@ config_black_cookie_status = "on"
 
 --white uri status
 config_white_uri_status	=	"on"
+
+--black uri status
+config_black_uri_status	=	"on"
