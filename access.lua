@@ -3,7 +3,7 @@ ngx.header["Server"] = "mywaf"
 
 --waf匹配流程
 function waf_main()
-	if whiteIpCheck() then
+	if white_ip_check() then
 	else
 		return
 	end

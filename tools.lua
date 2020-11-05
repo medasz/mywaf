@@ -8,7 +8,7 @@ function get_client_ip()
 		client_ip = ngx.var.remote_addr
 	end
 	if not client_ip then
-		client_ip = "unknow"
+		client_ip = "unknown"
 	end
 	return client_ip
 end
@@ -25,4 +25,34 @@ function get_rule(filename)
 	end
 	fd:close()
 	return t
+end
+
+--log record
+function log_record(action,uri,data,rule)
+	local cjson = require('cjson.safe')
+	uri = ngx.unescape_uri(uri)
+	local client_ip = get_client_ip()
+	local local_time = ngx.localtime()
+	local server_name = ngx.var.server_name
+	local user_agent = ngx.var.http_user_agent
+	local msg = {
+		client_ip 	= client_ip,
+		local_time	= local_time,
+		action		= action,
+		server_name	= server_name,
+		uri 		= uri
+		user_agent 	= user_agent,
+		data		= data,
+		rule 		= rule
+	}
+	local msg = cjson.encode(msg)
+	local filename = ngx.today().."_waf.log"
+	local log_file = config_waf_logs_path.."/"..filename
+	local fd = io.open(log_file,"a")
+	if not fd then
+		return
+	end
+	fd:write(msg)
+	fd:flush()
+	fd:close()
 end
