@@ -56,3 +56,14 @@ function log_record(action,uri,data,rule)
 	fd:flush()
 	fd:close()
 end
+
+--waf output
+function waf_output()
+	if config_waf_output == "redirect" then
+		ngx.redirect("http://www.baidu.com",301)
+	else
+		ngx.header['content_type']="text/html"
+		ngx.status=ngx.HTTP_FORBIDDEN
+		ngx.say(config_waf_output_html)
+		ngx.exit(ngx.status)
+end

@@ -7,6 +7,10 @@ function waf_main()
 
 	elseif black_ip_check() then
 
+	elseif black_user_agent_check() then
+
+	elseif cc_deny() then
+
 	else
 		return
 	end

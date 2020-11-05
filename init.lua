@@ -34,3 +34,26 @@ function black_ip_check()
 		end
 	end
 end
+
+--user agent check
+function black_user_agent_check()
+	if config_user_agent_rule == "on" then
+		local user_agent = ngx.var.http_user_agent
+		local black_user_agent_rule = get_rule("black_user_agent.rule")
+		if black_user_agent_rule ~= nil then
+			for _,rule in ipairs(black_user_agent_rule) do
+				if rule ~= "" and ngx.re.match(user_agent,rule,"isjo") then
+					log_record("black user_agent",ngx.var.request_uri,user_agent,rule)
+					if config_waf_status == "on" then
+						waf_output()
+					end
+				end
+			end
+		end
+	end
+end
+
+--cc deny
+function cc_deny()
+	
+end
