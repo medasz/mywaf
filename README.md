@@ -2,20 +2,11 @@
 一个简单的waf，完成unixhot的waf中post请求体检查部分
 
 # 安装
+### 安装openresty
 ```shell
-1.安装openresty
-2.git clone https://github.com/medasz/mywaf.git
-3.cp -r mywaf /path/to/your/openresty/
-4.配置nginx配置文件nginx.conf,在http字段中添加以下配置
-5.修改config.lua的RulePath(代表规则目录)和logdir(日志目录)
-6.给logs和rules目录读写权限
-chown -R nobody /path/to/your/openresty/mywaf/logs
-chown -R nobody /path/to/your/openresty/mywaf/rules
-7.检测nginx配置是否正确
-nginx -t
-8.启动nginx
-nginx
+
 ```
+
 # 检查
 ```shell
 检测是否安装成功：
@@ -23,7 +14,6 @@ nginx
 ```
 
 # 配置文件讲解
-
 
 # 历史版本说明
 1. 第一个版本

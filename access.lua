@@ -1,4 +1,5 @@
---修改
+--修改响应头字段Server
+ngx.header["Server"]="mywaf"
 
 function waf_main()
 
