@@ -39,4 +39,7 @@ config_waf_output_html	=	[[
 config_cc_deny_status	=	"on"
 
 --waf CC rate
-config_cc_deny_rate		=	"6/60"
+config_cc_deny_rate		=	"20/60"
+
+--black cookie status
+config_black_cookie_status = "on"

@@ -78,3 +78,23 @@ function cc_deny()
 		end
 	end
 end
+
+--black cookie check
+function black_cookie_check()
+	if config_black_cookie_status == "on" then
+		local cookie = ngx.var.http_cookie
+		local black_cookie_rule = get_rule("black_cookie.rule")
+		if black_user_agent_rule ~= nil then
+			for _,rule in ipairs(black_cookie_rule) do
+				if rule ~= "" and mgx.re.match(cookie,rule,"isjo") then
+					log_record("black cookie",ngx.var.request_uri,cookie,rule)
+					if config_waf_status == "on" then
+						waf_output()
+					end
+				end
+			end
+		end
+	end
+end
+
+--

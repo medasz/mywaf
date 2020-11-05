@@ -11,6 +11,8 @@ function waf_main()
 
 	elseif cc_deny() then
 
+	elseif black_cookie_check() then
+
 	else
 		return
 	end
