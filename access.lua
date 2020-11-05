@@ -17,6 +17,8 @@ function waf_main()
 
 	elseif black_uri_check() then
 
+	elseif black_get_args_check() then
+
 	else
 		return
 	end

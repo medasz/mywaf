@@ -120,11 +120,35 @@ function black_uri_check()
 		local black_uri_rule = get_rule("black_uri.rule")
 		if black_uri_rule ~= nil then
 			for _,rule in ipairs(black_uri_rule) do
-				if rule ~= "" and mgx.re.match(request_uri,rule,"isjo") then
-					log("black uri",ngx.var.request_uri,request_uri,rule)
+				if rule ~= "" and ngx.re.match(request_uri,rule,"isjo") then
+					log_record("black uri",ngx.var.request_uri,request_uri,rule)
 					if config_waf_status == "on" then
 						waf_output()
 					end
+				end
+			end
+		end
+	end
+end
+
+--black get args check
+function black_get_args_check()
+	if config_black_get_args_status == "on" then
+		local args = ngx.req.get_uri_args()
+		local black_get_args_rule = get_rule("black_get_args.rule")
+		for key,val in pairs(args) do
+			local data
+			if type(val) == "table" then
+				data = clear_list(val)
+			elseif type(val) == "boolean" then
+
+			else
+				data = val
+			end
+			if data and data ~= "" and match_rules(data,black_get_args_rule) then
+				log_record("black get_args",ngx.var.request_uri,data,rule)
+				if config_waf_status == "on" then
+					waf_output()
 				end
 			end
 		end

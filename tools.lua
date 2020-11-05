@@ -68,3 +68,25 @@ function waf_output()
 		ngx.exit(ngx.status)
 	end
 end
+
+--match rules
+function match_rules(data,rules)
+	for _,rule in ipairs(rules) do
+		if rule ~= ""  and ngx.re.match(data,rule,"isjo") then
+			return true
+		end
+	end
+	return false
+end
+--clear list to string
+function clear_list(list)
+	local t = {}
+	for _,v in ipais(list) do
+		if type(v) == "boolean" then
+
+		else
+			table.insert(t,v)
+		end
+	end
+	return table.concat(t," ")
+end

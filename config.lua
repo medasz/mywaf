@@ -49,3 +49,6 @@ config_white_uri_status	=	"on"
 
 --black uri status
 config_black_uri_status	=	"on"
+
+--black get args status
+config_black_get_args_status=	"on"
