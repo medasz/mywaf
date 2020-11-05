@@ -25,6 +25,11 @@
 4. 第四个版本
 修改整体设计，主要是根据[unixhot的waf](https://github.com/unixhot/waf.git)
 
+# 参考资料
+1. [nginx配置文件指令](https://nginx.org/en/docs/)
+2. [nginx_lua_module函数中文讲解](https://github.com/iresty/nginx-lua-module-zh-wiki)
+3. [lua，oprensty和nginx基础](https://moonbingbing.gitbooks.io/openresty-best-practices/content/)
+
 # TODO
 1. 规则存储到数据库
 2. waf管理界面
