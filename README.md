@@ -95,7 +95,7 @@ white_uri.rule 			#uri白名单，按行填写规则，可用正则,不区分大
 1. 规则存储到数据库
 2. waf管理界面
 3. 结果展示
-4. <b>unixhot的waf中没有请求体检查</b>
+4. <del>unixhot的waf中没有请求体检查</del>
 5. IP地址规则能使用范围ip
 
 # About
