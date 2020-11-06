@@ -78,6 +78,7 @@ function match_rules(data,rules)
 	end
 	return false
 end
+
 --clear list to string
 function clear_list(list)
 	local t = {}
@@ -89,4 +90,20 @@ function clear_list(list)
 		end
 	end
 	return table.concat(t," ")
+end
+
+--get boundary
+function get_boundary()
+	local content_type = ngx.req.get_headers()['content_type']
+	if not content_type then
+		return
+	end
+	if type(content_type) == "table" then
+		content_type = content_type[1]
+	end
+	local m = ngx.re.match(content_type,";\\s*boundary=\"([^\"]+)\"","isjo")
+	if m then 
+		return m
+	end
+	return mgx.re.match(content_type,";\\s*boundary=([^\",;]+)")
 end

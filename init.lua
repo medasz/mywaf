@@ -158,6 +158,32 @@ end
 --black post check
 function black_post_check()
 	if config_black_post_status == "on" then
-
+		local boundary = get_boundary()
+		if boundary then
+			black_post_file_check()
+		else
+			black_post_args_check()
+		end
 	end
+end
+
+--black post args check
+function black_post_args_check()
+	--同步读取客户端请求体，不阻塞nginx事件循环
+	ngx.req.read_body()
+	--返回table，读取uri的所有查询参数
+	local args = ngx.req.get_uri_args()
+	if not args then
+		return
+	end
+	for key,val in pairs(args) do
+		if type(val) == "table" then
+
+		end
+	end
+end
+
+--black post file check
+function black_post_file_check()
+	
 end
