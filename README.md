@@ -4,6 +4,31 @@
 # 安装
 ### 安装openresty
 ```shell
+#安装基础编译环境
+yum groupinstall "Development Tools" -y
+#安装依赖包
+yum install pcre-devel openssl-devel zlib-devel
+#下载openresty压缩包
+wget https://openresty.org/download/openresty-1.17.8.2.tar.gz
+#解压缩
+tar zxf openresty-1.17.8.2
+cd openresty-1.17.8.2
+#编译
+./configure --prefix=/opt/openresty --with-http_iconv_module --with-http_ssl_module --with-http_v2_module
+gmake&&gmake install
+#添加环境变量
+vim /etc/profile
+export PATH=$PATH:/opt/openresty/bin
+export PATH=$PATH:/opt/openresty/nginx/sbin
+export PATH=$PATH:/opt/openresty/luajit/bin
+#从文件中加载变量和函数到执行环境
+source /etc/profile
+```
+
+### 下载mywaf
+```shell
+cd /opt/openresty/
+git clone https://github.com/medasz/mywaf.git
 
 ```
 
