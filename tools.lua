@@ -105,5 +105,5 @@ function get_boundary()
 	if m then 
 		return m
 	end
-	return mgx.re.match(content_type,";\\s*boundary=([^\",;]+)")
+	return mgx.re.match(content_type,";\\s*boundary=([^\",;]+)","isjo")
 end
