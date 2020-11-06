@@ -146,7 +146,7 @@ function black_get_args_check()
 				data = val
 			end
 			if data and data ~= "" and match_rules(data,black_get_args_rule) then
-				log_record("black get_args",ngx.var.request_uri,data,rule)
+				log_record("black get_args",ngx.var.request_uri,ngx.unescape_uri(data),rule)
 				if config_waf_status == "on" then
 					waf_output()
 				end
@@ -169,6 +169,7 @@ end
 
 --black post args check
 function black_post_args_check()
+	local black_post_rule = get_rule("black_post.rule")
 	--同步读取客户端请求体，不阻塞nginx事件循环
 	ngx.req.read_body()
 	--返回table，读取uri的所有查询参数
@@ -177,8 +178,19 @@ function black_post_args_check()
 		return
 	end
 	for key,val in pairs(args) do
+		local data
 		if type(val) == "table" then
+			data = clear_list(val)
+		elseif type(val) == "boolean" then
 
+		else
+			data = val
+		end
+		if data and data ~= "" and match_rules(data,black_post_rule) then
+			log_record("black post args",ngx.var.request_uri,ngx.unescape_uri(data),rule)
+			if config_waf_status == "on" then
+				waf_output()
+			end
 		end
 	end
 end
