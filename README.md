@@ -62,6 +62,17 @@ nginx -s quit
 ```
 
 # 配置文件讲解
+```
+black_cookie.rule 		#cookie黑名单，按行填写规则，可用正则
+black_file_ext.rule 	#文件后缀黑名单，按行填写规则，可用正则
+black_get_args.rule 	#get查询参数黑名单，按行填写规则，可用正则
+black_ip.rule 			#ip地址黑名单，按行填写规则
+black_post.rule 		#post参数黑名单，按行填写规则，可用正则
+black_uri.rule 			#uri黑名单，按行填写规则，可用正则
+black_user_agent.rule 	#user_agent黑名单，按行填写规则，可用正则
+white_ip.rule 			#ip地址白名单，按行填写规则
+white_uri.rule 			#uri白名单，按行填写规则，可用正则
+```
 
 # 历史版本说明
 1. 第一个版本
@@ -82,7 +93,8 @@ nginx -s quit
 1. 规则存储到数据库
 2. waf管理界面
 3. 结果展示
-4. unixhot的waf中没有请求体检查
+4. <b>unixhot的waf中没有请求体检查</b>
+5. IP地址规则能使用范围ip
 
 # About
 1. 第一，二，三个版本是基于loveshell的ngx_lua_waf修改的
