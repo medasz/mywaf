@@ -25,14 +25,37 @@ export PATH=$PATH:/opt/openresty/luajit/bin
 source /etc/profile
 ```
 
-### 下载mywaf
+### 下载安装mywaf
 ```shell
 cd /opt/openresty/
 git clone https://github.com/medasz/mywaf.git
+cp -r mywaf /opt/openresty
+#给nginx添加操作mywaf中的logs和rules目录权限
+chown -R nobody /opt/openresty/mywaf/logs
+chown -R nobody /opt/openresty/mywaf/rules
+#根据nginx-conf目录中的nginx.conf配置文件修改openresty中的nginx配置文件
+#备份原始配置
+mv /opt/openresty/mywaf/nginx/conf/nginx.conf /opt/openresty/mywaf/nginx/conf/nginx.conf.bak
+#复制配置文件
+cp /opt/openresty/mywaf/nginx-conf/nginx.conf /opt/openresty/mywaf/nginx/conf/nginx.conf 
+#按自己情况修改开放端口，和配置反向代理
+```
+### 检测配置文件和启动nginx
+```shell
+nginx -t
+#返回如下提示，表示配置正确
+#nginx: the configuration file /opt/openresty/nginx/conf/nginx.conf syntax is ok
+#nginx: configuration file /opt/openresty/nginx/conf/nginx.conf test is successful
 
+#开启nginx
+nginx
+#更新配置文件和lua文件需要重新加载nginx
+nginx -s reload
+#停止nginx
+nginx -s quit
 ```
 
-# 检查
+# 检查mywaf是否启动成功
 ```shell
 检测是否安装成功：
 响应头中带有server:mywaf，表示waf配置成功。
