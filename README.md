@@ -83,6 +83,8 @@ white_uri.rule 			#uri白名单，按行填写规则，可用正则
 修改一些函数实现，上传了规则
 4. 第四个版本
 修改整体设计，主要是根据[unixhot的waf](https://github.com/unixhot/waf.git)
+5. 第五个版本
+根据[x-waf](https://github.com/xsec-lab/x-waf)进行修改
 
 # 参考资料
 1. [nginx配置文件指令](https://nginx.org/en/docs/)
