@@ -109,8 +109,13 @@ function get_boundary()
 end
 
 --match file ext
-function match_file_ext(data)
-	if data and data ~= "" then
-
+function match_file_ext(data,rules)
+	local m = ngx.re.match(data,"Content-Disposition: form-data;(.+)filename=\"(.+)\\.(.*)\"","ijo")
+	if m then
+		for _,rule in ipairs(rules) do
+			if rule == m[3] then
+				return true
+			end
+		end
 	end
 end
