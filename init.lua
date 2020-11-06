@@ -197,5 +197,47 @@ end
 
 --black post file check
 function black_post_file_check()
-	
+	local black_post_rule = get_rule("black_post.rule")
+	local black_post_file_ext_rule = get_rule("black_file_ext.rule")
+	--获取一个包含下游连接的socket，
+	local sock = ngx.req.socket()
+	if not sock then
+		return
+	end
+	sock:settimeout(0)
+	--创建一个当前请求的新请求体，并初始化缓冲区
+	ngx.req.init_body(128*1024)
+	--获取请求体内容
+	----获取请求体长度
+	local content_length = tonumber(ngx.req.get_headers()['content_length'])
+	local size = 4096
+	local curSize = 0
+	while curSize < content_length do
+		local data,err,partial = sock:receive(size)
+		data = data or partial
+		if not data then
+			return
+		end
+		----添加数据到新的请求体
+		ngx.req.append_body(data)
+		----文件后缀名检测
+		if data and data ~= "" and match_file_ext(data,black_post_file_ext_rule) then
+			log_record("black post file ext",ngx.var.request_uri,data,rule)
+			if config_waf_status == "on" then
+				waf_output()
+			end
+		----文件内容检测
+		elseif data and data ~= "" and match_rules(data,black_post_rule) then
+			log_record("black post content",ngx.var.request_uri,data,rule)
+			if config_waf_status == "on" then
+				waf_output()
+			end
+		end
+		curSize = curSize + #data
+		local less = content_length - curSize
+		if less < size then
+			size = less
+		end
+	end
+	ngx.req.finish_body()
 end

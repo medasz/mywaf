@@ -107,3 +107,10 @@ function get_boundary()
 	end
 	return ngx.re.match(content_type,";\\s*boundary=([^\",;]+)","isjo")
 end
+
+--match file ext
+function match_file_ext(data)
+	if data and data ~= "" then
+
+	end
+end
