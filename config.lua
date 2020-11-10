@@ -25,6 +25,7 @@ local _M = {
   config_black_get_args= "on",
   -- post请求体黑名单检测
   config_black_post    = "on",
+  
 	-- waf拦截模式(redirect/html)
 	config_waf_mode      = "html",
 	-- 跳转网址

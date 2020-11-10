@@ -129,6 +129,7 @@ function _M.cc_check()
 			if cur_count < total_count then
 				limit:incr(token,1)
 			else
+				tools.log_record(config.config_log_dir,"cc_deny",ngx.var.request_uri,cur_count,total_count)
 				if config.config_waf_status == "on" then
 					ngx.exit(403)
 				end
@@ -142,14 +143,26 @@ end
 -- cookie黑名单检测
 function _M.black_cookie_check()
 	if config.config_black_cookie == "on" then
-
+		local cookie = ngx.var.http_cookie
+		local rule_list = _M.get_rule("black_cookie.rule")
+		if rule_list then
+			for _,rule in ipairs(rule_list) do
+				if rule ~= "" and ngx.re.match(cookie,rule,"sjo") then
+					tools.log_record(config.config_log_dir,"black_cookie",ngx.var.request_uri,cookie,rule)
+					if config.config_waf_status == "on" then
+						tools.waf_output()
+					end
+				end
+			end
+		end
 	end
 end
 
 -- get参数黑名单检测
 function _M.black_get_args_check()
 	if config.config_black_get_args == "on" then
-
+		ngx.req.read_body()
+		local args = ngx.req.get_uri_args()
 	end
 end
 
