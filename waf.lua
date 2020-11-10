@@ -27,13 +27,13 @@ function _M.get_rule(filename)
 	return _M.rules_table[filename]
 end
 
+-- 白名单检测
 function _M.white_ip_check()
 	if config.config_white_ip == "on" then
 		local client_ip = tools.get_client_ip()
-		local rules_list = _M.get_rule("white_ip.rule")
-		if rules_list then
-			for _,rule in ipairs(rules_list) do
-				ngx.log(ngx.INFO,"rule:"..rule..";client_ip:"..client_ip)
+		local rule_list = _M.get_rule("white_ip.rule")
+		if rule_list then
+			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(client_ip,rule,"isjo") then
 					tools.log_record(config.config_log_dir,"white_ip",ngx.var.request_uri,client_ip,rule)
 					return true
@@ -43,9 +43,28 @@ function _M.white_ip_check()
 	end
 end
 
+-- 黑名单检测
+function _M.black_ip_check()
+	if config.config_black_ip == "on" then
+		local client_ip = tools.get_client_ip()
+		local rule_list = _M.get_rule("black_ip.rule")
+		if rule_list then
+			for _,rule in ipairs(rule_list) do
+				if rule ~= "" and ngx.re.match(client_ip,rule,"isjo") then
+					log_record(config.config_log_dir,"black_ip",ngx.var.request_uri,client_ip,rule)
+					if config.config_waf_status == "on" then
+						ngx.exit(403)
+					end
+				end
+			end 
+		end
+	end
+end
+
 -- 规则检查
 function _M.check()
 	if _M.white_ip_check() then
+	elseif _M.black_ip_check() then
 	else
 		return
 	end

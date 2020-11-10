@@ -78,15 +78,16 @@ function _M.log_record(log_dir,attack_type,uri,data,rule)
 		local_time = local_time,
 		attack_type = attack_type,
 		server_name = server_name,
-		req_uri = uri
+		req_uri = uri,
 		user_agent = user_agent,
-		req_data = data
+		data = data,
 		rule = rule
 	}
 	local log_line = cjson.encode(log_json_obj)
-	local log_file = config.config_log_dir.."/"..ngx.today().."_waf.log"
-	local file = io.open(log_file)
+	local log_file = log_dir.."/"..ngx.today().."_waf.log"
+	local file,err = io.open(log_file,"a")
 	if file == nil then
+		ngx.log(ngx.INFO,string.format("open file err:%s",err))
 		return
 	end
 	file:write(log_line.."\n")
