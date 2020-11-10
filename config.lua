@@ -13,6 +13,8 @@ local _M = {
 	config_user_agent    = "on",
   -- uri白名单检测
   config_white_uri     = "on",
+  -- uri黑名单检测
+  config_black_uri     = "on",
 
 	-- waf拦截模式(redirect/html)
 	config_waf_mode      = "html",

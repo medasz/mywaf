@@ -87,8 +87,26 @@ function _M.white_uri_check()
 		if rule_list then
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(req_uri,rule,"sjo") then
-					tools.log_record(config.config_log_dir,"white_uri",req_uri,req_uri,rule)
+					tools.log_record(config.config_log_dir,"white_uri",req_uri,"-",rule)
 					return true
+				end
+			end
+		end
+	end
+end
+
+-- uri黑名单检测
+function _M.black_uri_check()
+	if config.config_black_uri == "on" then
+		local req_uri = ngx.var.request_uri
+		local rule_list = _M.get_rule("black_uri.rule")
+		if rule_list then
+			for _,rule in ipairs(rule_list) do
+				if rule ~= "" and ngx.re.match(req_uri,rule,"sjo") then
+					tools.log_record(config.config_log_dir,"black_uri",req_uri,"-",rule)
+					if config.config_waf_status == "on" then
+						tools.waf_output()
+					end
 				end
 			end
 		end
@@ -101,8 +119,8 @@ function _M.check()
 	elseif _M.black_ip_check() then
 	elseif _M.black_user_agent_check() then
 	elseif _M.white_uri_check() then
+	elseif _M.black_uri_check() then
 	else
-		ngx.exit(403)
 		return
 	end
 end
