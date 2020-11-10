@@ -1,0 +1,12 @@
+[
+  {
+    "Id": 73,
+    "RuleType": "whiteUrl",
+    "RuleItem": "/news/"
+  },
+  {
+  	"Id":74,
+  	"RuleType":"whiteUrl",
+  	"RuleItem":"/"
+  }
+]
