@@ -24,7 +24,7 @@ end
 
 -- 获取规则
 function _M.get_rule(filename)
-	return _M[filename]
+	return _M.rules_table[filename]
 end
 
 function _M.white_ip_check()
@@ -33,6 +33,7 @@ function _M.white_ip_check()
 		local rules_list = _M.get_rule("white_ip.rule")
 		if rules_list then
 			for _,rule in ipairs(rules_list) do
+				ngx.log(ngx.INFO,"rule:"..rule..";client_ip:"..client_ip)
 				if rule ~= "" and ngx.re.match(client_ip,rule,"isjo") then
 					tools.log_record(config.config_log_dir,"white_ip",ngx.var.request_uri,client_ip,rule)
 					return true

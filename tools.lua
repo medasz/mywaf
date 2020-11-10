@@ -34,13 +34,12 @@ function _M.get_rules(rule_dir)
 			return _M.rule_tables
 		end
 		local rules = file_handle:read('*a')
-		ngx.log(ngx.INFO,rules)
 		file_handle:close()
-		if rules and rules ~= "" then
+		if rules then
 			rules = cjson.decode(rules)
 		end
 		
-		if rules then:
+		if rules then
 			local t = {}
 			for _,v in ipairs(rules) do
 				table.insert(t,v['RuleItem'])
@@ -72,6 +71,27 @@ function _M.log_record(log_dir,attack_type,uri,data,rule)
 	uri = ngx.unescape_uri(uri)
 	local local_time = ngx.localtime()
 	local client_ip = _M.get_client_ip()
+	local server_name = ngx.var.server_name
+	local user_agent = ngx.var.http_user_agent
+	local log_json_obj = {
+		client_ip = client_ip,
+		local_time = local_time,
+		attack_type = attack_type,
+		server_name = server_name,
+		req_uri = uri
+		user_agent = user_agent,
+		req_data = data
+		rule = rule
+	}
+	local log_line = cjson.encode(log_json_obj)
+	local log_file = config.config_log_dir.."/"..ngx.today().."_waf.log"
+	local file = io.open(log_file)
+	if file == nil then
+		return
+	end
+	file:write(log_line.."\n")
+	file:flush()
+	file:close()
 end
 
 return _M
