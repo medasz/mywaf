@@ -28,12 +28,12 @@ end
 function _M.get_rules(rule_dir)
 	local rules_dir_table = _M.get_rules_dir(rule_dir)
 	if rules_dir_table then
-		return
+		return _M.rule_tables
 	end
 	for filename,filedir in pairs(rules_dir_table) do
-		local file_hanle = io.open(filedir,"r")
-		if not file then
-			return
+		local file_handle = io.open(filedir,"r")
+		if not file_handle then
+			return _M.rule_tables
 		end
 		local rules = file_handle:read('*a')
 		file_handle:close()

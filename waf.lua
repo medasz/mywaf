@@ -11,7 +11,7 @@ local _M = {
 		"black_ip.rule":{'','',''}
 	}
 	]]
-	rules_table={}
+	rules_table = {}
 }
 
 -- 加载规则到内存
