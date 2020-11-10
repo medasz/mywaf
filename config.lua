@@ -21,7 +21,10 @@ local _M = {
   config_cc_rate       = "10/60",
   -- cookie黑名单检测
   config_black_cookie  = "on",
-
+  -- get参数黑名单检测
+  config_black_get_args= "on",
+  -- post请求体黑名单检测
+  config_black_post    = "on",
 	-- waf拦截模式(redirect/html)
 	config_waf_mode      = "html",
 	-- 跳转网址

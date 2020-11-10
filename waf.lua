@@ -146,6 +146,20 @@ function _M.black_cookie_check()
 	end
 end
 
+-- get参数黑名单检测
+function _M.black_get_args_check()
+	if config.config_black_get_args == "on" then
+
+	end
+end
+
+-- post请求体黑名单检测
+function _M.black_post_check()
+	if config.config_black_post == "on" then
+
+	end
+end
+
 -- 规则检查
 function _M.check()
 	if _M.white_ip_check() then
