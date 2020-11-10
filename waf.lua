@@ -47,7 +47,6 @@ end
 function _M.check()
 	if _M.white_ip_check() then
 	else
-		ngx.exit(403)
 		return
 	end
 end
