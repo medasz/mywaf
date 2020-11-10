@@ -161,8 +161,27 @@ end
 -- get参数黑名单检测
 function _M.black_get_args_check()
 	if config.config_black_get_args == "on" then
-		ngx.req.read_body()
 		local args = ngx.req.get_uri_args()
+		local rule_list = _M.get_rule("black_get_args.rule")
+		for k,v in pairs(args) do
+			local data
+			if type(v) == "table" then
+				data = table.concat(v," ")
+			elseif type(v) == "boolean" then
+			else
+				data = v
+			end
+			if rule_list then
+				for _,rule in ipairs(table_name) do
+					if rule ~= "" and ngx.re.match(data,rule,"sjo") then
+						tools.log_record(config.config_log_dir,"black_get_args",ngx.var.request_uri,data,rule)
+						if config.config_waf_status == "on" then
+							tools.waf_output()
+						end
+					end 
+				end
+			end
+		end
 	end
 end
 
