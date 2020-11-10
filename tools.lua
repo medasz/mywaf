@@ -53,4 +53,19 @@ function _M.get_rules(rule_dir)
 	return _M.rule_tables
 end
 
+-- 获取远程ip
+function get_client_ip()
+	local client_ip = ngx.req.get_headers()['x_real_ip']
+	if client_ip == nil then
+		client_ip = ngx.req.get_headers()['x_forwarded_for']
+	end
+	if client_ip == nil then
+		client_ip = ngx.var.remote_addr
+	end
+	if client_ip == nil then
+		client_ip = ""
+	end
+	return client_ip
+end
+
 return _M

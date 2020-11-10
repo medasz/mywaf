@@ -22,9 +22,30 @@ function _M.load_rules()
 	end
 end
 
+-- 获取规则
+function _M.get_rule(filename)
+	return _M.[filename]
+end
+function _M.white_ip_check()
+	if config.config_white_ip == "on" then
+		local client_ip = tools.get_client_ip()
+		local rules_list = _M.get_rule("white_ip.rule")
+		if rules_list then
+			for _,rule in ipairs(rules_list) do
+				if rule ~= "" and ngx.re.match(client_ip,rule,"isjo") then
+					return true
+				end
+			end
+		end
+	end
+end
 -- 规则检查
 function _M.check()
-	
+	if _M.white_ip_check() then
+	else
+		ngx.exit(403)
+		return
+	end
 end
 
 return _M
