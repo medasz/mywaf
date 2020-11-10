@@ -172,7 +172,7 @@ function _M.black_get_args_check()
 				data = v
 			end
 			if rule_list then
-				for _,rule in ipairs(table_name) do
+				for _,rule in ipairs(rule_list) do
 					if rule ~= "" and ngx.re.match(data,rule,"sjo") then
 						tools.log_record(config.config_log_dir,"black_get_args",ngx.var.request_uri,data,rule)
 						if config.config_waf_status == "on" then
@@ -188,7 +188,7 @@ end
 -- post请求体黑名单检测
 function _M.black_post_check()
 	if config.config_black_post == "on" then
-
+		local boundary = 
 	end
 end
 

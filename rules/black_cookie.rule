@@ -103,10 +103,5 @@
     "Id": 75,
     "RuleType": "args",
     "RuleItem": "and\\s+\\d+=\\d+"
-  },
-  {
-  	"Id":76,
-  	"RuleType":"cookie",
-  	"RuleItem":"PHP"
   }
 ]
