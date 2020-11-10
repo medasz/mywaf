@@ -15,6 +15,12 @@ local _M = {
   config_white_uri     = "on",
   -- uri黑名单检测
   config_black_uri     = "on",
+  -- cc防御
+  config_cc            = "on",
+  --cc防御频率
+  config_cc_rate       = "10/60",
+  -- cookie黑名单检测
+  config_black_cookie  = "on",
 
 	-- waf拦截模式(redirect/html)
 	config_waf_mode      = "html",

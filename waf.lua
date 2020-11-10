@@ -113,6 +113,39 @@ function _M.black_uri_check()
 	end
 end
 
+-- cc防御
+function _M.cc_check()
+	if config.config_cc == "on" then
+		local total_count = tonumber(string.match(config.config_cc_rate,"(.+)/"))
+		local exp_time = tonumber(string.match(config.config_cc_rate,"/(.+)"))
+		local limit = ngx.shared.limit
+		local client_ip =tools.get_client_ip()
+		local token = client_ip..ngx.var.uri
+		if limit == nil then
+			return
+		end
+		local cur_count = limit:get(token)
+		if cur_count then
+			if cur_count < total_count then
+				limit:incr(token,1)
+			else
+				if config.config_waf_status == "on" then
+					ngx.exit(403)
+				end
+			end
+		else
+			limit:set(token,1,exp_time)
+		end
+	end	
+end
+
+-- cookie黑名单检测
+function _M.black_cookie_check()
+	if config.config_black_cookie == "on" then
+
+	end
+end
+
 -- 规则检查
 function _M.check()
 	if _M.white_ip_check() then
@@ -120,6 +153,10 @@ function _M.check()
 	elseif _M.black_user_agent_check() then
 	elseif _M.white_uri_check() then
 	elseif _M.black_uri_check() then
+	elseif _M.cc_check() then
+	elseif _M.black_cookie_check() then
+	elseif _M.black_get_args_check() then
+	elseif _M.black_post_check() then
 	else
 		return
 	end
