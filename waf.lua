@@ -16,7 +16,7 @@ local _M = {
 
 -- 加载规则到内存
 function _M.load_rules()
-	local _M.rules_table = tools.get_rules(config.config_rule_dir)
+	_M.rules_table = tools.get_rules(config.config_rule_dir)
 	if next(_M.rules_table) == nil then
 		return
 	end
