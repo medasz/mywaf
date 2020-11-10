@@ -17,15 +17,16 @@ local _M = {
 -- 加载规则到内存
 function _M.load_rules()
 	_M.rules_table = tools.get_rules(config.config_rule_dir)
-	if next(_M.rules_table) == nil then
-		return
+	for k,v in pairs(_M.rules_table) do
+		ngx.log(ngx.INFO,"filename:"..k..';rules:'..table.concat(v,";"))
 	end
 end
 
 -- 获取规则
 function _M.get_rule(filename)
-	return _M.[filename]
+	return _M[filename]
 end
+
 function _M.white_ip_check()
 	if config.config_white_ip == "on" then
 		local client_ip = tools.get_client_ip()
@@ -33,12 +34,14 @@ function _M.white_ip_check()
 		if rules_list then
 			for _,rule in ipairs(rules_list) do
 				if rule ~= "" and ngx.re.match(client_ip,rule,"isjo") then
+					tools.log_record(config.config_log_dir,"white_ip",ngx.var.request_uri,client_ip,rule)
 					return true
 				end
 			end
 		end
 	end
 end
+
 -- 规则检查
 function _M.check()
 	if _M.white_ip_check() then
