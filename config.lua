@@ -1,24 +1,25 @@
 local _M = {
 	-- waf拦截
-	config_waf_status = "on",
+	config_waf_status    = "on",
 	-- 规则目录
-	config_rule_dir = "/opt/openresty/nginx/conf/mywaf/rules",
+	config_rule_dir      = "/opt/openresty/nginx/conf/mywaf/rules",
 	-- 日志记录目录
-	config_log_dir 	= "/tmp",
+	config_log_dir 	     = "/tmp",
 	-- ip白名单规则检测
-	config_white_ip = "on",
+	config_white_ip      = "on",
 	-- ip黑名单规则检测
-	config_black_ip = "on",
+	config_black_ip      = "on",
 	-- user_agent黑名单检测
-	config_user_agent = "on",
-
+	config_user_agent    = "on",
+  -- uri白名单检测
+  config_white_uri     = "on",
 
 	-- waf拦截模式(redirect/html)
-	config_waf_mode = "html",
+	config_waf_mode      = "html",
 	-- 跳转网址
-	config_redirect_uri = "http://github.com/medasz",
+	config_redirect_uri  = "http://github.com/medasz",
 	-- 拦截界面
-	config_output_html = [[
+	config_output_html   = [[
 	<html>
     <head>
     <meta charset="UTF-8">
@@ -42,7 +43,7 @@ local _M = {
     </div>
       </body>
     </html>
-	]]
+	]],
 
 }
 return _M
