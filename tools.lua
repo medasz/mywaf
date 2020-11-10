@@ -1,4 +1,5 @@
 local cjson = require("cjson.safe")
+local config = require("config")
 local _M = {
 	version = "1.0",
 	rule_tables = {},
@@ -93,6 +94,18 @@ function _M.log_record(log_dir,attack_type,uri,data,rule)
 	file:write(log_line.."\n")
 	file:flush()
 	file:close()
+end
+
+-- waf拦截界面
+function _M.waf_output()
+	if config.config_waf_mode == "redirect" then
+		ngx.redirect(config.config_redirect_uri,301)
+	else
+		ngx.header['content-type']= "text/html"
+		ngx.status = ngx.HTTP_FORBIDDEN
+		ngx.say(string.format(config.config_output_html,_M.get_client_ip()))
+		ngx.exit(ngx.status)
+	end
 end
 
 return _M

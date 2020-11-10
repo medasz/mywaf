@@ -51,7 +51,7 @@ function _M.black_ip_check()
 		if rule_list then
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(client_ip,rule,"isjo") then
-					log_record(config.config_log_dir,"black_ip",ngx.var.request_uri,client_ip,rule)
+					tools.log_record(config.config_log_dir,"black_ip",ngx.var.request_uri,client_ip,rule)
 					if config.config_waf_status == "on" then
 						ngx.exit(403)
 					end
@@ -61,10 +61,29 @@ function _M.black_ip_check()
 	end
 end
 
+-- 黑名单user_agent检测
+function _M.black_user_agent_check()
+	if config.config_user_agent == "on" then
+		local user_agent = ngx.var.http_user_agent
+		local rule_list = _M.get_rule("black_user_agent.rule")
+		if rule_list then
+			for _,rule in ipairs(rule_list) do
+				if rule ~= "" and ngx.re.match(user_agent,rule,"isjo") then
+					tools.log_record(config.config_log_dir,"black_user_agent",ngx.var.request_uri,"-",rule)
+					if config.config_waf_status == "on" then
+						tools.waf_output()
+					end
+				end
+			end
+		end
+	end
+end
+
 -- 规则检查
 function _M.check()
 	if _M.white_ip_check() then
 	elseif _M.black_ip_check() then
+	elseif _M.black_user_agent_check() then
 	else
 		return
 	end
