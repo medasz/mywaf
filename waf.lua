@@ -280,7 +280,8 @@ function _M.black_post_content_check()
 	local content_length = tonumber(ngx.req.get_headers()['content_length'])
 	local curSize = 0
 	while curSize < content_length do
-		local data = sock:receive(size)
+		local data,err,partial = sock:receive(size)
+		data = data or partial
 		-- 向新请求体中添加数据
 		ngx.req.append_body(data)
 		data = ngx.unescape_uri(data)
