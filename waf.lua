@@ -258,7 +258,7 @@ function _M.file_content_check(data)
 	local rule_list = _M.get_rule("black_post.rule")
 	local flag,rule = tools.ruleMatch(data,rule_list)
 	if flag then
-		tools.log_record(config.config_log_dir,"black_file_ext",ngx.var.request_uri,data,rule)
+		tools.log_record(config.config_log_dir,"black_file_content",ngx.var.request_uri,data,rule)
 		if config.config_waf_status == "on" then
 			tools.waf_output()
 		end
