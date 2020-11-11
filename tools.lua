@@ -11,7 +11,8 @@ local _M = {
 		"black_uri.rule",
 		"black_cookie.rule",
 		"black_get_args.rule",
-		"black_post.rule"
+		"black_post.rule",
+		"black_file_ext.rule"
 	}
 }
 
