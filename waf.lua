@@ -185,10 +185,49 @@ function _M.black_get_args_check()
 	end
 end
 
+-- post请求参数黑名单检测
+function _M.black_post_args_check()
+	ngx.req.read_body()
+	local args = ngx.req.get_post_args()
+	local rule_list = _M.get_rule("black_post.rule")
+	if args == nil then
+		return
+	end
+	for k,v in pairs(args) do
+		local data
+		if type(v) == "table" then
+			data = table.concat(v," ")
+		elseif type(v) == "boolean" then
+
+		else
+			data = v
+		end
+		if data then 
+			local flag,rule = tools.ruleMatch(ngx.unescape_uri(data),rule_list)
+			if flag then
+				tools.log_record(config.config_log_dir,"black_post_args",ngx.var.request_uri,ngx.unescape_uri(data),rule)
+				if config.config_waf_status == "on" then
+					tools.waf_output()
+				end
+			end
+		end
+	end
+end
+
+-- post请求内容黑名单检测
+function _M.black_post_content_check()
+
+end
+
 -- post请求体黑名单检测
 function _M.black_post_check()
 	if config.config_black_post == "on" then
-		local boundary = 
+		local boundary = tools.get_boundary()
+		if boundary then
+			_M.black_post_content_check()
+		else
+			_M.black_post_args_check()
+		end
 	end
 end
 

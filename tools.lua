@@ -108,4 +108,33 @@ function _M.waf_output()
 	end
 end
 
+-- 获取content-type中boundary值
+-- Content-Type: multipart/form-data; boundary=---------------------------269914186631737613662904992226
+function _M.get_boundary()
+	local content_type = ngx.req.get_headers()['content_type']
+	if content_type == nil then
+		return
+	end
+	if type(content_type) == "table" then
+		content_type = content_type[1]
+	end
+	local m = ngx.re.match(content_type,";\\s*boundary=([^\",;]+)","sjo")
+	if m then
+		return m
+	end
+	return ngx.re.match(content_type,";\\s*boundary=\"([^\"]+)\"","sjo")
+end
+
+-- 规则匹配
+function _M.ruleMatch(data,rules)
+	if rules then
+		for _,rule in ipairs(rules) do
+			if rule ~= "" and ngx.re.match(ngx.unescape_uri(data),rule,"sjo") then
+				return true,rule
+			end
+		end
+	end
+	return false,nil
+end
+
 return _M
