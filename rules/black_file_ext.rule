@@ -1,0 +1,12 @@
+[
+  {
+    "Id": 80,
+    "RuleType": "blackFileExt",
+    "RuleItem": "php"
+  },
+  {
+    "Id": 81,
+    "RuleType": "blackFileExt",
+    "RuleItem": "jsp"
+  }
+]

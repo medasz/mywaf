@@ -196,9 +196,9 @@ function _M.black_post_args_check()
 	for k,v in pairs(args) do
 		local data
 		if type(v) == "table" then
-			data = table.concat(v," ")
+			data = string.format("%s:%s",k,table.concat(v," "))
 		elseif type(v) == "boolean" then
-
+			data = k
 		else
 			data = v
 		end
@@ -214,9 +214,90 @@ function _M.black_post_args_check()
 	end
 end
 
+-- 文件后缀名黑名单检测
+-- 文件上传数据格式样例
+--[[
+-----------------------------2243723649166645011495177173
+Content-Disposition: form-data; name="MAX_FILE_SIZE"
+
+100000
+-----------------------------2243723649166645011495177173
+Content-Disposition: form-data; name="uploaded"; filename="test.txt"
+Content-Type: text/plain
+
+abc
+
+-----------------------------2243723649166645011495177173
+Content-Disposition: form-data; name="Upload"
+
+Upload
+-----------------------------2243723649166645011495177173
+Content-Disposition: form-data; name="user_token"
+
+a1ef7f34ab38ec1a83951a5b1e06a283
+-----------------------------2243723649166645011495177173--
+
+]]
+function _M.file_ext_check(data)
+	local rule_list = _M.get_rule("black_file_ext.rule")
+	local m = ngx.re.match(data,"Content-Disposition: form-data;(.+)filename=\"(.+)\\.(.+)\"","jo")
+	if m == nil then
+		return
+	end
+	local flag,rule = tools.ruleMatch(m[3],rule_list)
+	if flag then
+		tools.log_record(config.config_log_dir,"black_file_ext",ngx.var.request_uri,data,rule)
+		if config.config_waf_status == "on" then
+			tools.waf_output()
+		end
+	end
+end
+
+-- 文件内容黑名单检测
+function _M.file_content_check(data)
+	local rule_list = _M.get_rule("black_post.rule")
+	local flag,rule = tools.ruleMatch(data,rule_list)
+	if flag then
+		tools.log_record(config.config_log_dir,"black_file_ext",ngx.var.request_uri,data,rule)
+		if config.config_waf_status == "on" then
+			tools.waf_output()
+		end
+	end
+end
+
 -- post请求内容黑名单检测
 function _M.black_post_content_check()
+	local rule_list = _M.get_rule("black_post.rule")
+	-- 创建一个包含下游连接的socket对象
+	local sock = ngx.req.socket()
+	if sock == nil then
+		return
+	end
+	sock.settimeout(0)
+	-- 创建当前请求的新请求体，并初始化缓冲区大小
+	ngx.req.init_body(128*1024)
+	local size = 4096
+	local content_length = tonumber(ngx.req.get_headers()['content_length'])
+	local curSize = 0
+	while curSize < content_length do
+		local data = sock:receive(size)
+		-- 向新请求体中添加数据
+		ngx.req.append_body(data)
+		data = ngx.unescape_uri(data)
+		-- 文件后缀名黑名单检测
+		_M.file_ext_check(data)
 
+		-- 文件内容黑名单检测
+		_M.file_content_check(data)
+
+		-- 根据剩余数据大小调整获取数据大小
+		curSize = curSize + size
+		local less = content_length - curSize
+		if less < size then
+			size = less
+		end
+	end
+	ngx.req.finish_body()
 end
 
 -- post请求体黑名单检测
