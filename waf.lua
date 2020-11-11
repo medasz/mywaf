@@ -299,7 +299,6 @@ function _M.black_post_content_check()
 		end
 	end
 	ngx.req.finish_body()
-	sock:close()
 end
 
 -- post请求体黑名单检测
