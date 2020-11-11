@@ -27,12 +27,8 @@ source /etc/profile
 
 ### 下载安装mywaf
 ```shell
-cd /opt/openresty/
+cd /opt/openresty/nginx/conf
 git clone https://github.com/medasz/mywaf.git
-cp -r mywaf /opt/openresty
-#给nginx添加操作mywaf中的logs和rules目录权限
-chown -R nobody /opt/openresty/mywaf/logs
-chown -R nobody /opt/openresty/mywaf/rules
 #根据nginx-conf目录中的nginx.conf配置文件修改openresty中的nginx配置文件
 #备份原始配置
 mv /opt/openresty/mywaf/nginx/conf/nginx.conf /opt/openresty/mywaf/nginx/conf/nginx.conf.bak
@@ -63,15 +59,15 @@ nginx -s quit
 
 # 配置文件讲解
 ```
-black_cookie.rule 		#cookie黑名单，按行填写规则，可用正则,不区分大小写
-black_file_ext.rule 	#文件后缀黑名单，按行填写规则，可用正则,不区分大小写
-black_get_args.rule 	#get查询参数黑名单，按行填写规则，可用正则,不区分大小写
-black_ip.rule 			#ip地址黑名单，按行填写规则,不区分大小写
-black_post.rule 		#post参数黑名单，按行填写规则，可用正则,不区分大小写
-black_uri.rule 			#uri黑名单，按行填写规则，可用正则,不区分大小写
-black_user_agent.rule 	#user_agent黑名单，按行填写规则，可用正则,不区分大小写
-white_ip.rule 			#ip地址白名单，按行填写规则,不区分大小写
-white_uri.rule 			#uri白名单，按行填写规则，可用正则,不区分大小写
+black_cookie.rule 		#cookie黑名单，可用正则
+black_file_ext.rule 	#文件后缀黑名单，可用正则
+black_get_args.rule 	#get查询参数黑名单，可用正则
+black_ip.rule 			#ip地址黑名单，可用正则
+black_post.rule 		#post参数黑名单，可用正则
+black_uri.rule 			#uri黑名单，可用正则
+black_user_agent.rule 	#user_agent黑名单，可用正则
+white_ip.rule 			#ip地址白名单，可用正则
+white_uri.rule 			#uri白名单，可用正则,
 ```
 
 # 历史版本说明
