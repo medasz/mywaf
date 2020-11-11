@@ -273,7 +273,7 @@ function _M.black_post_content_check()
 	if sock == nil then
 		return
 	end
-	sock.settimeout(0)
+	sock:settimeout(0)
 	-- 创建当前请求的新请求体，并初始化缓冲区大小
 	ngx.req.init_body(128*1024)
 	local size = 4096
@@ -298,6 +298,7 @@ function _M.black_post_content_check()
 		end
 	end
 	ngx.req.finish_body()
+	sock:close()
 end
 
 -- post请求体黑名单检测
