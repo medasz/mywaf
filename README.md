@@ -81,6 +81,8 @@ white_uri.rule 			#uri白名单，可用正则,
 修改整体设计，主要是根据[unixhot的waf](https://github.com/unixhot/waf.git)
 5. 第五个版本
 根据[x-waf](https://github.com/xsec-lab/x-waf)进行修改
+6. 第六个版本
+修改了mywaf的规则类型，为了匹配[mywaf-admin](https://github.com/medasz/mywaf-admin)
 
 # 参考资料
 1. [nginx配置文件指令](https://nginx.org/en/docs/)
@@ -88,11 +90,12 @@ white_uri.rule 			#uri白名单，可用正则,
 3. [lua，oprensty和nginx基础](https://moonbingbing.gitbooks.io/openresty-best-practices/content/)
 
 # TODO
-1. 规则存储到数据库
-2. waf管理界面
+1. <del>规则存储到数据库</del>
+2. <del>waf管理界面</del>
 3. 结果展示
 4. <del>unixhot的waf中没有请求体检查</del>
 5. IP地址规则能使用范围ip
+6. 从数据库中获取规则
 
 # About
 1. 第一，二，三个版本是基于loveshell的ngx_lua_waf修改的
