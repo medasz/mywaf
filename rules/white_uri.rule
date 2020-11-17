@@ -1,7 +1,7 @@
 [
   {
     "Id": 73,
-    "RuleType": "whiteUrl",
+    "RuleType": "white_uri",
     "RuleItem": "/news/"
   }
 ]

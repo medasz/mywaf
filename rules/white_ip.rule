@@ -1,7 +1,7 @@
 [
   {
     "Id": 74,
-    "RuleType": "whiteip",
+    "RuleType": "white_ip",
     "RuleItem": "8.8.8.8"
   }
 ]

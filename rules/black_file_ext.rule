@@ -1,12 +1,12 @@
 [
   {
     "Id": 80,
-    "RuleType": "blackFileExt",
+    "RuleType": "black_file_ext",
     "RuleItem": "php"
   },
   {
     "Id": 81,
-    "RuleType": "blackFileExt",
+    "RuleType": "black_file_ext",
     "RuleItem": "jsp"
   }
 ]
