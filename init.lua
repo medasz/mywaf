@@ -1,4 +1,5 @@
 -- 导入waf文件
 mywaf = require('waf')
--- 加载规则
-mywaf.load_rules()
+
+-- 启动特权进程
+mywaf.start_agent()

@@ -1,8 +1,18 @@
 -- 加载配置文件
-local config = require('config')
+-- local config = require('config')
+local config = {}
 
 -- 加载功能函数
 local tools	= require('tools')
+
+-- 加载进程库
+local process = require('ngx.process')
+
+-- 加载http库
+local http = require('resty.http')
+
+-- 加载cjson
+local cjson = require('cjson.safe')
 
 local _M = {
 	--[[
@@ -13,6 +23,74 @@ local _M = {
 	]]
 	rules_table = {}
 }
+local uuid
+local wafConfig
+-- 启动特权进程
+function _M.start_agent()
+	local ok,err = process.enable_privileged_agent()
+	if not ok then
+		ngx.log(ngx.ERR,err)
+	end
+end
+
+-- agent特权进程
+function agent()
+	local httpc = http.new()
+	httpc:set_timeouts(5000,5000,10000)
+	httpc:connect("127.0.0.1",5600)
+	local res,err = httpc:request({
+		method="GET",
+		path="/json/config",
+	})
+	if not res then
+		ngx.log(ngx.ERR,err)
+		ngx.timer.at(10,agent)
+		return
+	end
+	local wafConfig = cjson.decode(res)
+	if not wafConfig then
+		ngx.timer.at(10,agent)
+		return
+	end
+	local loadConfig = ngx.shared.loadConfig
+	local success,err,forcible=loadConfig:set("config",wafConfig)
+	if not err then
+		ngx.log(ngx.ERR,err)
+		ngx.timer.at(10,agent)
+		return
+	end
+	ngx.timer.at(10,agent)
+end
+-- worker进程
+function worker()
+	local err
+	local loadConfig=ngx.shared.loadConfig
+	wafConfigStr=loadConfig:get("config")
+	if not wafConfigStr then
+		ngx.log(ngx.ERR,err)
+		ngx.timer.at(10,worker)
+		return
+	end
+	local wafConfig,err=cjson.decode(wafConfigStr)
+	if not wafConfig then
+		ngx.log(ngx.ERR,err)
+		ngx.timer.at(10,worker)	
+	end
+	config=wafConfig
+	_M.load_rules()
+	--ngx.log(ngx.ERR,wafConfig.config_output_html)
+	ngx.timer.at(10,worker)
+end
+
+-- 定时任务
+function _M.init_worker()
+	local process_type = process.type()
+	if process_type == "privileged agent" then
+		ngx.timer.at(0,agent)
+	elseif process_type == 'worker' then
+		ngx.timer.at(0,worker)
+	end
+end
 
 -- 加载规则到内存
 function _M.load_rules()
