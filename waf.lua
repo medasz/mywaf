@@ -14,6 +14,12 @@ local http = require('resty.http')
 -- 加载cjson
 local cjson = require('cjson.safe')
 
+-- 配置uuid
+local config_uuid
+
+-- 规则uuid
+local rule_uuid
+
 local _M = {
 	--[[
 	{
@@ -23,8 +29,7 @@ local _M = {
 	]]
 	rules_table = {}
 }
-local uuid
-local wafConfig
+
 -- 启动特权进程
 function _M.start_agent()
 	local ok,err = process.enable_privileged_agent()
@@ -38,34 +43,71 @@ function agent()
 	local httpc = http.new()
 	httpc:set_timeouts(5000,5000,10000)
 	httpc:connect("127.0.0.1",5600)
-	local res,err = httpc:request({
+	local resConfig,err = httpc:request({
 		method="GET",
 		path="/json/config",
 	})
-	if not res then
+	if not resConfig then
 		ngx.log(ngx.ERR,err)
 		ngx.timer.at(10,agent)
 		return
 	end
-	local wafConfig = cjson.decode(res)
-	if not wafConfig then
+	local resConfigStr,err=resConfig:read_body()
+	if not resConfigStr then
+		ngx.log(ngx.ERR,err)
 		ngx.timer.at(10,agent)
 		return
 	end
+	local wafConfig = cjson.decode(resConfigStr)
+	if not wafConfig or wafConfig.result=="false" then
+		ngx.timer.at(10,agent)
+		return
+	end
+
+
+
+
+
 	local loadConfig = ngx.shared.loadConfig
-	local success,err,forcible=loadConfig:set("config",wafConfig)
-	if not err then
+	local success,err,forcible=loadConfig:set("config",resConfigStr)--wafConfig)
+	if err then
 		ngx.log(ngx.ERR,err)
 		ngx.timer.at(10,agent)
 		return
 	end
+	
+
+	local resRule,err = httpc:request({
+		method="GET",
+		path="/json/rule",
+	})
+	if not resRule then
+		ngx.log(ngx.ERR,err)
+		ngx.timer.at(10,agent)
+		return
+	end
+	local resRuleStr=resRule:read_body()
+	local wafRule = cjson.decode(resRuleStr)
+	if not wafRule or wafRule.result=="false" then
+		ngx.timer.at(10,agent)
+		return
+	end
+
+	success,err,forcible=loadConfig:set("rule",resRuleStr)--wafConfig)
+	if err then
+		ngx.log(ngx.ERR,err)
+		ngx.timer.at(10,agent)
+		return
+	end
+	
 	ngx.timer.at(10,agent)
 end
+
 -- worker进程
 function worker()
 	local err
 	local loadConfig=ngx.shared.loadConfig
-	wafConfigStr=loadConfig:get("config")
+	local wafConfigStr=loadConfig:get("config")
 	if not wafConfigStr then
 		ngx.log(ngx.ERR,err)
 		ngx.timer.at(10,worker)
@@ -76,9 +118,28 @@ function worker()
 		ngx.log(ngx.ERR,err)
 		ngx.timer.at(10,worker)	
 	end
-	config=wafConfig
-	_M.load_rules()
-	--ngx.log(ngx.ERR,wafConfig.config_output_html)
+	if not config_uuid or wafConfig.uuid ~= config_uuid then
+		config=wafConfig
+		config_uuid=wafConfig.uuid
+	end
+	
+
+	local wafRuleStr,err=loadConfig:get("rule")
+	if not wafRuleStr then
+		ngx.log(ngx.ERR,err)
+		ngx.timer.at(10,worker)
+		return
+	end
+	local wafRule,err=cjson.decode(wafRuleStr)
+	if not wafRule then
+		ngx.log(ngx.ERR,err)
+		ngx.timer.at(10,worker)	
+	end
+	if not rule_uuid or wafRule.uuid ~= rule_uuid then
+		_M.rules_table=wafRule.rules
+		rule_uuid=wafRule.uuid
+	end
+	
 	ngx.timer.at(10,worker)
 end
 
