@@ -83,6 +83,8 @@ white_uri.rule 			#uri白名单，可用正则,
 根据[x-waf](https://github.com/xsec-lab/x-waf)进行修改
 6. 第六个版本
 修改了mywaf的规则类型，为了匹配[mywaf-admin](https://github.com/medasz/mywaf-admin)
+7. 第七个版本
+定时从数据库中获取配置信息
 
 # 参考资料
 1. [nginx配置文件指令](https://nginx.org/en/docs/)
