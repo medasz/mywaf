@@ -84,7 +84,9 @@ white_uri.rule 			#uri白名单，可用正则,
 6. 第六个版本
 修改了mywaf的规则类型，为了匹配[mywaf-admin](https://github.com/medasz/mywaf-admin)
 7. 第七个版本
-定时从数据库中获取配置信息
+定时从mywaf-admin的web端获取配置信息
+8. 第八个版本
+定时从mywaf-admin的web端获取规则
 
 # 参考资料
 1. [nginx配置文件指令](https://nginx.org/en/docs/)
@@ -97,7 +99,8 @@ white_uri.rule 			#uri白名单，可用正则,
 3. 结果展示
 4. <del>unixhot的waf中没有请求体检查</del>
 5. IP地址规则能使用范围ip
-6. 从数据库中获取规则
+6. <del>从数据库中获取规则</del>
+7. 添加日志存储方式
 
 # About
 1. 第一，二，三个版本是基于loveshell的ngx_lua_waf修改的
