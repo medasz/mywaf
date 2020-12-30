@@ -87,6 +87,9 @@ white_uri.rule 			#uri白名单，可用正则,
 定时从mywaf-admin的web端获取配置信息
 8. 第八个版本
 定时从mywaf-admin的web端获取规则
+9. 第九个版本
+添加dashboard界面展示数据
+将日志存储到数据库
 
 # 参考资料
 1. [nginx配置文件指令](https://nginx.org/en/docs/)

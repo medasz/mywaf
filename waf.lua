@@ -175,6 +175,10 @@ function _M.white_ip_check()
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(client_ip,rule,"isjo") then
 					tools.log_record(config.config_log_dir,"white_ip",ngx.var.request_uri,client_ip,rule)
+					ngx.ctx.waf_log={}
+					ngx.ctx.waf_log["attack_type"]="white_ip"
+					ngx.ctx.waf_log["rule"]=rule
+					ngx.ctx.waf_log["data"]=client_ip
 					return true
 				end
 			end
@@ -191,6 +195,10 @@ function _M.black_ip_check()
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(client_ip,rule,"isjo") then
 					tools.log_record(config.config_log_dir,"black_ip",ngx.var.request_uri,client_ip,rule)
+					ngx.ctx.waf_log={}
+					ngx.ctx.waf_log["attack_type"]="black_ip"
+					ngx.ctx.waf_log["rule"]=rule
+					ngx.ctx.waf_log["data"]=client_ip
 					if config.config_waf_status == "on" then
 						ngx.exit(403)
 					end
@@ -209,6 +217,10 @@ function _M.black_user_agent_check()
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(user_agent,rule,"sjo") then
 					tools.log_record(config.config_log_dir,"black_user_agent",ngx.var.request_uri,"-",rule)
+					ngx.ctx.waf_log={}
+					ngx.ctx.waf_log["attack_type"]="black_user_agent"
+					ngx.ctx.waf_log["rule"]=rule
+					ngx.ctx.waf_log["data"]="-"
 					if config.config_waf_status == "on" then
 						tools.waf_output()
 					end
@@ -227,6 +239,10 @@ function _M.white_uri_check()
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(req_uri,rule,"sjo") then
 					tools.log_record(config.config_log_dir,"white_uri",req_uri,"-",rule)
+					ngx.ctx.waf_log={}
+					ngx.ctx.waf_log["attack_type"]="white_uri"
+					ngx.ctx.waf_log["rule"]=rule
+					ngx.ctx.waf_log["data"]="-"
 					return true
 				end
 			end
@@ -243,6 +259,10 @@ function _M.black_uri_check()
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(req_uri,rule,"sjo") then
 					tools.log_record(config.config_log_dir,"black_uri",req_uri,"-",rule)
+					ngx.ctx.waf_log={}
+					ngx.ctx.waf_log["attack_type"]="black_uri"
+					ngx.ctx.waf_log["rule"]=rule
+					ngx.ctx.waf_log["data"]="-"
 					if config.config_waf_status == "on" then
 						tools.waf_output()
 					end
@@ -269,6 +289,10 @@ function _M.cc_check()
 				limit:incr(token,1)
 			else
 				tools.log_record(config.config_log_dir,"cc_deny",ngx.var.request_uri,cur_count,total_count)
+				ngx.ctx.waf_log={}
+				ngx.ctx.waf_log["attack_type"]="cc_deny"
+				ngx.ctx.waf_log["rule"]=string.format("%s",total_count)
+				ngx.ctx.waf_log["data"]=string.format("%s",cur_count)
 				if config.config_waf_status == "on" then
 					ngx.exit(403)
 				end
@@ -288,6 +312,10 @@ function _M.black_cookie_check()
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(cookie,rule,"sjo") then
 					tools.log_record(config.config_log_dir,"black_cookie",ngx.var.request_uri,cookie,rule)
+					ngx.ctx.waf_log={}
+					ngx.ctx.waf_log["attack_type"]="black_cookie"
+					ngx.ctx.waf_log["rule"]=rule
+					ngx.ctx.waf_log["data"]=cookie
 					if config.config_waf_status == "on" then
 						tools.waf_output()
 					end
@@ -314,6 +342,10 @@ function _M.black_get_args_check()
 				for _,rule in ipairs(rule_list) do
 					if rule ~= "" and ngx.re.match(data,rule,"sjo") then
 						tools.log_record(config.config_log_dir,"black_get_args",ngx.var.request_uri,data,rule)
+						ngx.ctx.waf_log={}
+						ngx.ctx.waf_log["attack_type"]="black_get_args"
+						ngx.ctx.waf_log["rule"]=rule
+						ngx.ctx.waf_log["data"]=data
 						if config.config_waf_status == "on" then
 							tools.waf_output()
 						end
@@ -345,6 +377,10 @@ function _M.black_post_args_check()
 			local flag,rule = tools.ruleMatch(ngx.unescape_uri(data),rule_list)
 			if flag then
 				tools.log_record(config.config_log_dir,"black_post_args",ngx.var.request_uri,ngx.unescape_uri(data),rule)
+				ngx.ctx.waf_log={}
+				ngx.ctx.waf_log["attack_type"]="black_post_args"
+				ngx.ctx.waf_log["rule"]=rule
+				ngx.ctx.waf_log["data"]=ngx.unescape_uri(data)
 				if config.config_waf_status == "on" then
 					tools.waf_output()
 				end
@@ -386,6 +422,10 @@ function _M.file_ext_check(data)
 	local flag,rule = tools.ruleMatch(m[3],rule_list)
 	if flag then
 		tools.log_record(config.config_log_dir,"black_file_ext",ngx.var.request_uri,data,rule)
+		ngx.ctx.waf_log={}
+		ngx.ctx.waf_log["attack_type"]="black_file_ext"
+		ngx.ctx.waf_log["rule"]=rule
+		ngx.ctx.waf_log["data"]=data
 		if config.config_waf_status == "on" then
 			tools.waf_output()
 		end
@@ -398,6 +438,10 @@ function _M.file_content_check(data)
 	local flag,rule = tools.ruleMatch(data,rule_list)
 	if flag then
 		tools.log_record(config.config_log_dir,"black_file_content",ngx.var.request_uri,data,rule)
+		ngx.ctx.waf_log={}
+		ngx.ctx.waf_log["attack_type"]="black_file_content"
+		ngx.ctx.waf_log["rule"]=rule
+		ngx.ctx.waf_log["data"]=data
 		if config.config_waf_status == "on" then
 			tools.waf_output()
 		end
