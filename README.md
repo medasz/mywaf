@@ -99,11 +99,11 @@ white_uri.rule 			#uri白名单，可用正则,
 # TODO
 1. <del>规则存储到数据库</del>
 2. <del>waf管理界面</del>
-3. 结果展示
+3. <del>结果展示</del>
 4. <del>unixhot的waf中没有请求体检查</del>
 5. IP地址规则能使用范围ip
 6. <del>从数据库中获取规则</del>
-7. 添加日志存储方式
+7. <del>添加日志存储方式</del>
 
 # About
 1. 第一，二，三个版本是基于loveshell的ngx_lua_waf修改的
