@@ -65,6 +65,10 @@ function _M.get_client_ip()
 	if client_ip == nil then
 		client_ip = ""
 	end
+	local x = string.find(client_ip,",")
+    if x ~= nil then
+    	client_ip = string.sub(client_ip,1,x-1)
+    end
 	return client_ip
 end
 
