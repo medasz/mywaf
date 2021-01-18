@@ -90,6 +90,10 @@ white_uri.rule 			#uri白名单，可用正则,
 9. 第九个版本
 添加dashboard界面展示数据
 将日志存储到数据库
+10. 第十个版本
+功能稳定版
+11. 全新版
+
 
 # 参考资料
 1. [nginx配置文件指令](https://nginx.org/en/docs/)
