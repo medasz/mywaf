@@ -1,3 +1,6 @@
+-- 加载mysql数据库连接
+local mysql = require("resty.mysql")
+
 -- 加载配置文件
 -- local config = require('config')
 local config = {}
@@ -40,29 +43,124 @@ end
 
 -- agent特权进程
 function agent()
-	local httpc = http.new()
-	httpc:set_timeouts(5000,5000,10000)
-	httpc:connect("127.0.0.1",5600)
-	local resConfig,err = httpc:request({
-		method="GET",
-		path="/json/config",
-	})
-	if not resConfig then
+	local db,err = mysql:new()
+	if err then
+	    ngx.log(ngx.ERR,err)
+		ngx.timer.at(10,agent)
+		return
+	end
+	db:set_timeout(1000)
+	local options={
+	    host="127.0.0.1",
+	    port=3306,
+	    database="mywaf",
+	    user="admin",
+	    password="password",
+	}
+	local ok,err=db:connect(options)
+	if not ok then
 		ngx.log(ngx.ERR,err)
-		ngx.timer.at(10,agent)
-		return
+	    db:close()
+	    ngx.timer.at(10,agent)
+	    return
 	end
-	local resConfigStr,err=resConfig:read_body()
-	if not resConfigStr then
-		ngx.log(ngx.ERR,err)
-		ngx.timer.at(10,agent)
-		return
+	local flag_sql = "select * from flag"
+	local flag,err,errcode,sqlstate=db:query(flag_sql)
+	if not flag then
+	    ngx.log(ngx.ERR,err)
+	    db:close()
+	    ngx.timer.at(10,agent)
+	    return
 	end
-	local wafConfig = cjson.decode(resConfigStr)
-	if not wafConfig or wafConfig.result=="false" then
-		ngx.timer.at(10,agent)
-		return
+	local resConfigStr = nil
+	local resRuleStr = nil
+	for x,y in ipairs(flag) do
+	    if y.name == "config" then
+	        local get_config_sql = "select * from waf_config"
+	        local waf_config,err,errcode,sqlstate = db:query(get_config_sql)
+	        if not waf_config then
+	            ngx.log(ngx.ERR,err)
+	            db:close()
+	            ngx.timer.at(10,agent)
+	            return
+	        end
+	        local resConfig = {}
+	        for k,v in ipairs(waf_config) do
+	            resConfig[v.name_key]=v.value
+	        end
+	        if not next(resConfig) then
+	            resConfig.result='false'
+	            db:close()
+	            ngx.timer.at(10,agent)
+	            return
+	        else
+	            resConfig.result='true'
+	            resConfig.uuid=y.uuid
+	        end
+	        resConfigStr = cjson.encode(resConfig)
+			if not resConfigStr then
+				db:close()
+				ngx.timer.at(10,agent)
+				return
+			end
+	    else
+	        local rules,err,errcode,sqlstate = db:query("select * from rule")
+	        if not rules then
+	            ngx.log(ngx.ERR,err)
+	            db:close()
+	            ngx.timer.at(10,agent)
+	            return
+	        end
+	        local tmp = {}
+	        for x,y in ipairs(rules) do
+	            if not tmp[y.rule_type..".rule"] then
+	                tmp[y.rule_type..".rule"]={y.rule_item}
+	            else
+	                table.insert(tmp[y.rule_type..".rule"],y.rule_item)
+	            end
+	        end
+	        local resRule = {}
+	        if not next(tmp) then
+	            resRule.result="false"
+	            db:close()
+	            ngx.timer.at(10,agent)
+	        else
+	            resRule.result="true"
+	            resRule.rules=tmp
+	            resRule.uuid=y.uuid
+	        end
+	        resRuleStr = cjson.encode(resRule)
+			if not resRuleStr then
+				db:close()
+				ngx.timer.at(10,agent)
+				return
+			end
+	    end
 	end
+	-- local httpc = http.new()
+	-- httpc:set_timeouts(5000,5000,10000)
+	-- httpc:connect("127.0.0.1",5600)
+	-- local resConfig,err = httpc:request({
+	-- 	method="GET",
+	-- 	path="/json/config",
+	-- })
+	-- if not resConfig then
+	-- 	ngx.log(ngx.ERR,err)
+	-- 	ngx.timer.at(10,agent)
+	-- 	return
+	-- end
+	-- local resConfigStr,err=resConfig:read_body()
+	-- if not resConfigStr then
+	-- 	ngx.log(ngx.ERR,err)
+	-- 	ngx.timer.at(10,agent)
+	-- 	return
+	-- end
+	-- local wafConfig = cjson.decode(resConfigStr)
+	-- if not wafConfig or wafConfig.result=="false" then
+	-- 	ngx.timer.at(10,agent)
+	-- 	return
+	-- end
+
 
 
 
@@ -72,34 +170,36 @@ function agent()
 	local success,err,forcible=loadConfig:set("config",resConfigStr)--wafConfig)
 	if err then
 		ngx.log(ngx.ERR,err)
+		db:close()
 		ngx.timer.at(10,agent)
 		return
 	end
 	
 
-	local resRule,err = httpc:request({
-		method="GET",
-		path="/json/rule",
-	})
-	if not resRule then
-		ngx.log(ngx.ERR,err)
-		ngx.timer.at(10,agent)
-		return
-	end
-	local resRuleStr=resRule:read_body()
-	local wafRule = cjson.decode(resRuleStr)
-	if not wafRule or wafRule.result=="false" then
-		ngx.timer.at(10,agent)
-		return
-	end
+	-- local resRule,err = httpc:request({
+	-- 	method="GET",
+	-- 	path="/json/rule",
+	-- })
+	-- if not resRule then
+	-- 	ngx.log(ngx.ERR,err)
+	-- 	ngx.timer.at(10,agent)
+	-- 	return
+	-- end
+	-- local resRuleStr=resRule:read_body()
+	-- local wafRule = cjson.decode(resRuleStr)
+	-- if not wafRule or wafRule.result=="false" then
+	-- 	ngx.timer.at(10,agent)
+	-- 	return
+	-- end
 
 	success,err,forcible=loadConfig:set("rule",resRuleStr)--wafConfig)
 	if err then
 		ngx.log(ngx.ERR,err)
+		db:close()
 		ngx.timer.at(10,agent)
 		return
 	end
-	
+	db:close()
 	ngx.timer.at(10,agent)
 end
 
@@ -174,7 +274,7 @@ function _M.white_ip_check()
 		if rule_list then
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(client_ip,rule,"isjo") then
-					tools.log_record(config.config_log_dir,"white_ip",ngx.var.request_uri,client_ip,rule)
+					----tools.log_record(config.config_log_dir,"white_ip",ngx.var.request_uri,client_ip,rule)
 					ngx.ctx.waf_log={}
 					ngx.ctx.waf_log["attack_type"]="white_ip"
 					ngx.ctx.waf_log["rule"]=rule
@@ -194,7 +294,7 @@ function _M.black_ip_check()
 		if rule_list then
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(client_ip,rule,"isjo") then
-					tools.log_record(config.config_log_dir,"black_ip",ngx.var.request_uri,client_ip,rule)
+					----tools.log_record(config.config_log_dir,"black_ip",ngx.var.request_uri,client_ip,rule)
 					ngx.ctx.waf_log={}
 					ngx.ctx.waf_log["attack_type"]="black_ip"
 					ngx.ctx.waf_log["rule"]=rule
@@ -216,7 +316,7 @@ function _M.black_user_agent_check()
 		if rule_list then
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(user_agent,rule,"sjo") then
-					tools.log_record(config.config_log_dir,"black_user_agent",ngx.var.request_uri,"-",rule)
+					--tools.log_record(config.config_log_dir,"black_user_agent",ngx.var.request_uri,"-",rule)
 					ngx.ctx.waf_log={}
 					ngx.ctx.waf_log["attack_type"]="black_user_agent"
 					ngx.ctx.waf_log["rule"]=rule
@@ -238,7 +338,7 @@ function _M.white_uri_check()
 		if rule_list then
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(req_uri,rule,"sjo") then
-					tools.log_record(config.config_log_dir,"white_uri",req_uri,"-",rule)
+					--tools.log_record(config.config_log_dir,"white_uri",req_uri,"-",rule)
 					ngx.ctx.waf_log={}
 					ngx.ctx.waf_log["attack_type"]="white_uri"
 					ngx.ctx.waf_log["rule"]=rule
@@ -258,7 +358,7 @@ function _M.black_uri_check()
 		if rule_list then
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(req_uri,rule,"sjo") then
-					tools.log_record(config.config_log_dir,"black_uri",req_uri,"-",rule)
+					--tools.log_record(config.config_log_dir,"black_uri",req_uri,"-",rule)
 					ngx.ctx.waf_log={}
 					ngx.ctx.waf_log["attack_type"]="black_uri"
 					ngx.ctx.waf_log["rule"]=rule
@@ -288,7 +388,7 @@ function _M.cc_check()
 			if cur_count < total_count then
 				limit:incr(token,1)
 			else
-				tools.log_record(config.config_log_dir,"cc_deny",ngx.var.request_uri,cur_count,total_count)
+				--tools.log_record(config.config_log_dir,"cc_deny",ngx.var.request_uri,cur_count,total_count)
 				ngx.ctx.waf_log={}
 				ngx.ctx.waf_log["attack_type"]="cc_deny"
 				ngx.ctx.waf_log["rule"]=string.format("%s",total_count)
@@ -311,7 +411,7 @@ function _M.black_cookie_check()
 		if rule_list then
 			for _,rule in ipairs(rule_list) do
 				if rule ~= "" and ngx.re.match(cookie,rule,"sjo") then
-					tools.log_record(config.config_log_dir,"black_cookie",ngx.var.request_uri,cookie,rule)
+					--tools.log_record(config.config_log_dir,"black_cookie",ngx.var.request_uri,cookie,rule)
 					ngx.ctx.waf_log={}
 					ngx.ctx.waf_log["attack_type"]="black_cookie"
 					ngx.ctx.waf_log["rule"]=rule
@@ -341,7 +441,7 @@ function _M.black_get_args_check()
 			if rule_list then
 				for _,rule in ipairs(rule_list) do
 					if rule ~= "" and ngx.re.match(data,rule,"sjo") then
-						tools.log_record(config.config_log_dir,"black_get_args",ngx.var.request_uri,data,rule)
+						--tools.log_record(config.config_log_dir,"black_get_args",ngx.var.request_uri,data,rule)
 						ngx.ctx.waf_log={}
 						ngx.ctx.waf_log["attack_type"]="black_get_args"
 						ngx.ctx.waf_log["rule"]=rule
@@ -376,7 +476,7 @@ function _M.black_post_args_check()
 		if data then 
 			local flag,rule = tools.ruleMatch(ngx.unescape_uri(data),rule_list)
 			if flag then
-				tools.log_record(config.config_log_dir,"black_post_args",ngx.var.request_uri,ngx.unescape_uri(data),rule)
+				--tools.log_record(config.config_log_dir,"black_post_args",ngx.var.request_uri,ngx.unescape_uri(data),rule)
 				ngx.ctx.waf_log={}
 				ngx.ctx.waf_log["attack_type"]="black_post_args"
 				ngx.ctx.waf_log["rule"]=rule
@@ -421,7 +521,7 @@ function _M.file_ext_check(data)
 	end
 	local flag,rule = tools.ruleMatch(m[3],rule_list)
 	if flag then
-		tools.log_record(config.config_log_dir,"black_file_ext",ngx.var.request_uri,data,rule)
+		--tools.log_record(config.config_log_dir,"black_file_ext",ngx.var.request_uri,data,rule)
 		ngx.ctx.waf_log={}
 		ngx.ctx.waf_log["attack_type"]="black_file_ext"
 		ngx.ctx.waf_log["rule"]=rule
@@ -437,7 +537,7 @@ function _M.file_content_check(data)
 	local rule_list = _M.get_rule("black_post.rule")
 	local flag,rule = tools.ruleMatch(data,rule_list)
 	if flag then
-		tools.log_record(config.config_log_dir,"black_file_content",ngx.var.request_uri,data,rule)
+		--tools.log_record(config.config_log_dir,"black_file_content",ngx.var.request_uri,data,rule)
 		ngx.ctx.waf_log={}
 		ngx.ctx.waf_log["attack_type"]="black_file_content"
 		ngx.ctx.waf_log["rule"]=rule
