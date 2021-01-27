@@ -1,6 +1,9 @@
 -- 加载mysql数据库连接
 local mysql = require("resty.mysql")
 
+-- 加载md5库
+local md5 = require("resty.md5")
+
 -- 加载配置文件
 -- local config = require('config')
 local config = {}
@@ -74,6 +77,7 @@ function agent()
 	end
 	local resConfigStr = nil
 	local resRuleStr = nil
+	local cycle = 10
 	for x,y in ipairs(flag) do
 	    if y.name == "config" then
 	        local get_config_sql = "select * from waf_config"
@@ -96,6 +100,12 @@ function agent()
 	        else
 	            resConfig.result='true'
 	            resConfig.uuid=y.uuid
+	        end
+	        if resConfig.config_update_cycle ~= tostring(cycle) then
+	        	local tmp_number = tonumber(resConfig.config_update_cycle)
+	        	if tmp_number then
+	        		cycle = tmp_number
+	        	end
 	        end
 	        resConfigStr = cjson.encode(resConfig)
 			if not resConfigStr then
@@ -200,14 +210,14 @@ function agent()
 		return
 	end
 	db:close()
-	ngx.timer.at(10,agent)
+	ngx.timer.at(cycle,agent)
 end
 
 -- worker进程
 function worker()
 	local err
 	local loadConfig=ngx.shared.loadConfig
-	local wafConfigStr=loadConfig:get("config")
+	local wafConfigStr,err=loadConfig:get("config")
 	if not wafConfigStr then
 		ngx.log(ngx.ERR,err)
 		ngx.timer.at(10,worker)
@@ -239,8 +249,14 @@ function worker()
 		_M.rules_table=wafRule.rules
 		rule_uuid=wafRule.uuid
 	end
-	
-	ngx.timer.at(10,worker)
+	local cycle = 10
+	if config.config_reload_cycle ~= tostring(cycle) then
+    	local tmp_number = tonumber(config.config_reload_cycle)
+    	if tmp_number then
+    		cycle = tmp_number
+    	end
+    end
+	ngx.timer.at(cycle,worker)
 end
 
 -- 定时任务
@@ -379,7 +395,8 @@ function _M.cc_check()
 		local exp_time = tonumber(string.match(config.config_cc_rate,"/(.+)"))
 		local limit = ngx.shared.limit
 		local client_ip =tools.get_client_ip()
-		local token = client_ip..ngx.var.uri
+		local token = client_ip..ngx.var.host..ngx.var.uri
+		token = md5.sumhexa(token)
 		if limit == nil then
 			return
 		end
@@ -610,6 +627,11 @@ function _M.check()
 	else
 		return
 	end
+end
+
+-- 获取是否自动开启添加黑名单的开关值
+function _M.get_config_cc_black_ip()
+	return config.config_cc_black_ip
 end
 
 return _M
